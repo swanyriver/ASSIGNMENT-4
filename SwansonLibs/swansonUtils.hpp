@@ -14,6 +14,7 @@
 #include <ctime>
 #include <cmath>
 #include <list>
+#include <set>
 using std::list;
 
 class swansonUtil {
@@ -54,6 +55,11 @@ public:
          }
       }
       sortArray[i] = val;
+   }
+
+   template<typename TypeElement>
+   static bool ExistsInSet(TypeElement element, set<TypeElement> mySet){
+      return (mySet.count(element) > 0);
    }
 
 };

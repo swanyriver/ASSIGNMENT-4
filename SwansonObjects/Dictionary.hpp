@@ -32,6 +32,10 @@ private:
    set<string> wordSet;
    set<string>::iterator lookup;
 
+public:
+   set<string> GetSet(){ return wordSet; } //temporary access for phrase game
+   //instead add AddWord() method, and others as needed!!!
+
 protected:
 
    bool constructionWasSuccesfull;
@@ -243,6 +247,7 @@ private:
    }
 
 };
+
 
 #endif /* DICTIONARY_HPP_ */
 
