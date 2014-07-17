@@ -24,7 +24,8 @@
 #include <string>
 #include <vector>
 #include <cstdlib>
-#include "myFunctions.hpp"
+#include "../SwansonLibs/swansonString.hpp"
+#include "../SwansonLibs/swansonInput.hpp"
 using namespace std;
 
 //strings for menu

@@ -21,6 +21,7 @@
 
 #include "swansonString.hpp"
 
+//todo, change these to static constants, belonging to the class
 #define RETRY_GET_WORD 	"Lets try that again"
 #define THIS_WORD	 	"Is this what you wanted to input"
 

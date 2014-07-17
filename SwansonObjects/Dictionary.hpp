@@ -21,8 +21,8 @@
 #include <set>
 #include <algorithm> //for string compare less<string>, used by set<>
 #include <iterator>
-#include "swansonUtils.hpp"
-#include "swansonString.hpp"
+#include "../SwansonLibs/swansonUtils.hpp"
+#include "../SwansonLibs/swansonString.hpp"
 
 using namespace std;
 
