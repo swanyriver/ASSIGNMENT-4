@@ -36,7 +36,7 @@ public:
    set<string> GetSet () {
       return wordSet;
    } //temporary access for phrase game
-   //instead add AddWord() method, and others as needed!!!
+     //instead add AddWord() method, and others as needed!!!
 
 protected:
 
@@ -242,7 +242,9 @@ private:
             nextWord.erase( nextWord.size() - 1 , 1 ); // delete last character
          }
 
-         if ( !nextWord.empty() && swansonString::AllLetters( nextWord ) ) {
+         if ( (!nextWord.empty() && swansonString::AllLetters( nextWord ))
+               && (MaxWordLength == UNRESTRICTED
+                     || nextWord.size() < MaxWordLength) ) {
 
             nextWord = swansonString::LowerCase( nextWord );
             wordSet.insert( nextWord );
