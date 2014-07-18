@@ -33,14 +33,22 @@ const string DICT_INTRO =
       "The words in this game will be chosen from a dictionary,  You can play with the regular dictionary or use a book for fun flavor,  even add your own file";
 const string CLEAR_INTRO =
       "This games uses a system call to clear the screen,  if you prefer not then it can do this in an alternative mode";
-
+const string HOW_MANY_WORDS = "Now Playing with ";
+//for entering your own dictionary
+const string FILENAME_IN =
+      "what is the name and full path of your file (myfile.txt)\nI am trusting you to get it exactly right:";
+const string HOW_MANY_LETTERS =
+      "What do you want the length of the longest words in the game to be:";
+const int IN_MIN_LETTER = 3;
+const int IN_MAX_LETTER = 15;
 //todo add menu item text here
 
 //global objects//////
 Dictionary myDict;
 
-Menu DictionaryMenu(DICT_INTRO);
-Menu ClearScreenMenu(CLEAR_INTRO);
+Menu DictionaryMenu( DICT_INTRO );
+Menu ClearScreenMenu( CLEAR_INTRO );
+Menu myMenu( Banner() );
 
 ///fuction declarations /////////////////
 
@@ -54,28 +62,59 @@ void PlayGame ();
 void showDictionaryMenu () {
    DictionaryMenu.showMenu();
 }
-void usePreFabDict(){
+void usePreFabDict () {
    myDict = Dictionary( PreFabDict::getSet() );
 
-   if(myDict.Filled()){
-      cout << endl << "something strange has happend, we had an empty dictionary"
+   myMenu.SetIntro(
+         Banner() + HOW_MANY_WORDS
+               + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
+
+   if ( myDict.Filled() ) {
+      cout << endl
+            << "something strange has happend, we had an empty dictionary"
             << " but don't worry, we can still play with my limited stored vocabulary";
       cout << endl << "press anything to continue:";
       getchar();
-   }else{
-      cout << endl << "something has gone very wrong here, we have no words, we cannot play";
+   } else {
+      cout << endl
+            << "something has gone very wrong here, we have no words, we cannot play";
       cout << endl << "press anything to exit:";
-      exit(1);
+      exit( 1 );
    }
 }
 void MobyDict () {
    //construcs a dict of 6 letter long words from unformatted file "moby.txt"
    myDict = ThemeDictionary( MAX_WORD_LENGTH , "moby.txt" );
-   if ( !myDict.Filled() ) usePreFabDict();
+   myMenu.SetIntro(
+         Banner() + HOW_MANY_WORDS
+               + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
+   if ( !myDict.Filled() )
+      usePreFabDict();
 }
 void PlainDict () {
    myDict = Dictionary( MAX_WORD_LENGTH ); //Constructs a dict of 6 letter long words
-   if ( !myDict.Filled() ) usePreFabDict();
+   myMenu.SetIntro(
+         Banner() + HOW_MANY_WORDS
+               + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
+
+   if ( !myDict.Filled() )
+      usePreFabDict();
+}
+
+void UserDict () {
+   string filename = swansonInput::GetString( FILENAME_IN );
+   int maxLenght = swansonInput::GetInt( HOW_MANY_LETTERS , IN_MIN_LETTER ,
+         IN_MAX_LETTER );
+
+   myDict = ThemeDictionary(maxLenght,filename);
+
+   myMenu.SetIntro(
+         Banner() + HOW_MANY_WORDS
+               + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
+
+   if ( !myDict.Filled() )
+      usePreFabDict();
+
 }
 
 //clear screen choices
@@ -93,6 +132,8 @@ void SystemClearSelected () {
 //todo add arg reader for -s and -d   (clear screen off, and dictionary off)
 
 int main ( int argc , char* argv[] ) {
+
+   myMenu.demoAllItem = false;
 
    //set clearscreen pointer //system call by default
    ClearScreen = swansonUtil::ClearScreen;
@@ -115,6 +156,10 @@ int main ( int argc , char* argv[] ) {
    moby.itemRepeat = false;
    DictionaryMenu.addItem( moby );
 
+   MenuItem user( UserDict , "Make Your Own \"MyDictionary.txt\"" , "loading your dictionary" );
+   user.itemRepeat = false;
+   DictionaryMenu.addItem( user );
+
    //clear menu
    ClearScreenMenu.menuRepeat = false;
    ClearScreenMenu.demoAllItem = false;
@@ -127,17 +172,14 @@ int main ( int argc , char* argv[] ) {
    offItem.itemRepeat = false;
    ClearScreenMenu.addItem( offItem );
 
-   Menu myMenu( Banner() );
-   myMenu.demoAllItem = false;
-
    MenuItem DictMenuItem( showDictionaryMenu , "Dictionary Settings" , "" );
    MenuItem ClearMenuItem( showClearScreenMenu , "System() Config" , "" );
    DictMenuItem.hasIntro = false;
    ClearMenuItem.hasIntro = false;
    DictMenuItem.itemRepeat = false;
    ClearMenuItem.itemRepeat = false;
-   myMenu.addItem(DictMenuItem);
-   myMenu.addItem(ClearMenuItem);
+   myMenu.addItem( DictMenuItem );
+   myMenu.addItem( ClearMenuItem );
 
    MenuItem playGameItem( PlayGame , "Play Game" , "intro" , "Play Again" );
    playGameItem.hasIntro = false;

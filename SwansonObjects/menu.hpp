@@ -80,6 +80,10 @@ public:
                true ) {
    }
 
+   void SetIntro(string intro){
+      menuIntro = intro;
+   }
+
    //add an item to the menu
    void addItem ( MenuItem item ) {
       menuItems.push_back( item );

@@ -248,7 +248,7 @@ string Banner () {
    Banner += "|  |  |  |  |  .  \\  |  |\\    |     \\    |\n";
    Banner += "|__|  |__|__|__|\\_|__|__| \\___|_____|\\___|\n";
 
-   Banner += "This time we are playing with all the words!!!";
+   Banner += "Back with a Vengeance! ";
 
    return Banner;
 }
