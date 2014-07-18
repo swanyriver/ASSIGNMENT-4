@@ -58,22 +58,24 @@ void HackClearScreen () {
 string LineWrap(string output, int sideBarWidth, int DisplayWidth){
    cout << "coming into linewrap with:" << output << endl;
 
-   if(output.length()<DisplayWidth-sideBarWidth){
-      output.append(DisplayWidth - sideBarWidth - output.size() - 1, ' ');
+   if(output.length()<DisplayWidth){
+      output.append(DisplayWidth - output.size() - 1, ' ');
       output += "*";
       return output;
    }
    else{
-      int lastSpace = output.find_last_of(' ', DisplayWidth-sideBarWidth-1);
-      string thisLine = output.substr(0,lastSpace-1);
-      output.erase(0,lastSpace-1);
+      int lastSpace = output.find_last_of(' ', DisplayWidth-1);
+      string thisLine = output.substr(0,lastSpace);
+      output.erase(0,lastSpace);
 
       cout << "output:" << output << endl << "thisline:" << thisLine << endl;
-      cout << "remaining space:" << DisplayWidth - sideBarWidth - thisLine.size() - 1;
+      //cout << "remaining space:" << DisplayWidth -  thisLine.size() - 1;
       getchar();
 
-      thisLine.append(DisplayWidth - sideBarWidth - thisLine.size() - 1, ' ');
+      thisLine.append(DisplayWidth - thisLine.size() - 1, ' ');
       thisLine += "*\n";
+
+      output.insert(0,sideBarWidth,'*');
 
       return thisLine + LineWrap(output,sideBarWidth,DisplayWidth);
    }
@@ -102,7 +104,7 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
 
    //build secret word string
    secretPhraseLine = SECRET_PHRASE_LABEL;
-   secretPhraseLine += LineWrap(revealPhrase,SIDEBAR_DISPLAY,WIDTH_DISPLAY);
+   secretPhraseLine = LineWrap(secretPhraseLine + revealPhrase,SIDEBAR_DISPLAY,WIDTH_DISPLAY);
    /*secretPhraseLine += revealPhrase;
    secretPhraseLine.append( WIDTH_DISPLAY - secretPhraseLine.length() - 1 ,
          ' ' );
