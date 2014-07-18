@@ -70,9 +70,7 @@ void display(PhraseGame::Guess guess, set<string> GuessesMade){
    cout << endl << "message is:" << guess.message;
    cout << endl << "there are " << swansonString::NumOccurances("my secret phrase my", guess.guess)
          << " occurances of " << guess.guess << " in :my secret phrase my";
-   cout << endl <<"the phrase set contains: " << AllItemsInSet(guess.PhraseSet);
    cout << endl <<"the guess set contains: " << AllItemsInSet(GuessesMade);
-   cout << endl <<"the source set contains: " << AllItemsInSet(guess.SourceSet);
    cout << endl << endl <<"secret phrase: [" << guess.revealedPhrase << "]";
 }
 

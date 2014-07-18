@@ -28,11 +28,6 @@ public:
       bool correct;
       int guesesRemaining;
       string revealedPhrase;
-
-      //for testing
-      set<string> PhraseSet;
-      set<string> GuessSet;
-      set<string> SourceSet;
    };
 
    set<string> mGuesseesMade;
@@ -52,31 +47,22 @@ private:
    int mGuessesRemaining;
    string mSecretPhrase;
    set<string> mSourceWords;
-   set<string> mPhraseWords;  // todo maybe depricate! not used
-
-   //private construction method
-   set<string> PopulatePhraseSet ( string secretPhrase );
 
    //internal methods
    string GetUserGuess ();
-   bool CorrectGuess ( string guess );
    void RemoveExtraSpaces ( string &guess );
 
 public:
    //public methods
    Guess NextGuess ();
    set<string> GuessesMade () {
-      return mGuesseesMade;
-   }
-   ;
-   //todo possibly deprecate in favor of persitent string in display object
-   //this will avoid alpha sorted answers
+      return mGuesseesMade;}
+   //use for valid letters printout
 
    ///constructors
    PhraseGame ( set<string> SourceWords , string SecretPhrase , int maxGuesses ) :
-         mSourceWords( SourceWords ), mPhraseWords(
-               PopulatePhraseSet( SecretPhrase ) ), mGuessesRemaining(
-               maxGuesses ), mSecretPhrase( SecretPhrase ) {
+         mSourceWords( SourceWords ), mGuessesRemaining( maxGuesses ), mSecretPhrase(
+               SecretPhrase ) {
       //add leters of the alphabet to SourceWords
       //for checking validity when guessing
       for ( char letter = 'a' ; letter <= 'z' ; letter++ ) {
@@ -101,10 +87,6 @@ string PhraseGame::WRONG_GUESS = "Nope,  Thats not it";
 
 PhraseGame::Guess PhraseGame::NextGuess () {
    PhraseGame::Guess myGuess;
-
-   //for testing
-   myGuess.SourceSet = mSourceWords;
-   myGuess.PhraseSet = mPhraseWords;
 
    myGuess.guesesRemaining = mGuessesRemaining;
 
@@ -179,35 +161,6 @@ void PhraseGame::RemoveExtraSpaces ( string &guess ) {
    while ( guess.at( guess.size() - 1 ) == ' ' ) {
       guess.erase( guess.size() - 1 , 1 );
    }
-}
-
-bool PhraseGame::CorrectGuess ( string guess ) {
-   return true; //use REcuse Checker
-}
-
-//construction method
-set<string> PhraseGame::PopulatePhraseSet ( string secretPhrase ) {
-   //use recurion, populate the set
-   set<string> phraseSet;
-
-   //add whole phrase
-   phraseSet.insert( secretPhrase );
-
-   //add individual words and letters //iterative
-   list<string> words;
-   swansonString::SeperateWords( secretPhrase , words );
-   while ( !words.empty() ) {
-      string nextWord = words.front();
-      words.pop_front();
-      phraseSet.insert( nextWord );
-      int position = 0;
-      while ( position < nextWord.size() ) {
-         phraseSet.insert( nextWord.substr( position++ , 1 ) );
-      }
-   }
-
-   return phraseSet;
-
 }
 
 #endif /* PHRASEGAME_HPP_ */
