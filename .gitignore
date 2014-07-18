@@ -1,3 +1,6 @@
+FunPhrase
+
+FunRecursion
 
 .cproject
 
@@ -6,3 +9,7 @@
 a03hangman.cpp
 
 FunArray
+
+a03hangman.cpp
+
+recursionCheck.cpp

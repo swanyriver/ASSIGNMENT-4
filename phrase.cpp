@@ -7,10 +7,13 @@
 
 #include <string>
 #include <iostream>
+#include <iterator> //for testing only
+#include <set>
 
 #include "PhraseGame.hpp"
 #include "PreFabDictionary.hpp"
 
+using namespace std;
 
 ///global variables /////////////////////
 
@@ -42,13 +45,27 @@ int main(int argc , char* argv[]){
    return 0;
 }
 
+string AllItemsInSet(set<string> myset){
+   string oString;
+   //set<string>::iterator lookup;
+   set<string>::iterator lookup;
+   lookup = myset.begin();
+   for (int i=0;i<myset.size();i++){
+      oString+=*lookup + "/";
+      lookup++;
+   }
 
+   return oString;
+
+}
 
 
 void display(PhraseGame::Guess guess){
    //blackboxing
-   cout << "guesss is" << guess.guess << endl;
-
+   cout << "guesss is:" << guess.guess << endl;
+   cout << endl <<"the phrase set contains: " << AllItemsInSet(guess.PhraseSet);
+   cout << endl <<"the guess set contains: " << AllItemsInSet(guess.GuessSet);
+   cout << endl <<"the source set contains: " << AllItemsInSet(guess.SourceSet);
 }
 
 

@@ -29,6 +29,11 @@ public:
       int GuesesRemaining;
       //int occurences; //todo implement later
       string mRevealedPhrase;
+
+      //for testing
+      set<string> PhraseSet;
+      set<string> GuessSet;
+      set<string> SourceSet;
    };
 
    set<string> mGuesseesMade;
@@ -53,6 +58,7 @@ private:
 public:
    //public methods
    Guess NextGuess ();
+   set<string> GuessesMade(){ return mGuesseesMade; };
 
    ///constructors
    PhraseGame ( set<string> SourceWords , string SecretPhrase , int maxGuesses ) :
@@ -61,11 +67,10 @@ public:
                maxGuesses ), mSecretPhrase( SecretPhrase ) {
       //add leters of the alphabet to SourceWords
       //for checking validity when guessing
-
       for (char letter = 'a'; letter <= 'z'; letter++){
          stringstream ss;
          ss << letter;
-         SourceWords.insert(string(ss.str()));
+         mSourceWords.insert(string(ss.str()));
       }
    }
 };
@@ -90,6 +95,11 @@ PhraseGame::Guess PhraseGame::NextGuess () {
 
    //int occurences; //todo implement later
 
+
+   //for testing
+   myGuess.SourceSet = mSourceWords;
+   myGuess.PhraseSet = mPhraseWords;
+   myGuess.GuessSet = mGuesseesMade; //actually needed for display
 
    return myGuess;
 }

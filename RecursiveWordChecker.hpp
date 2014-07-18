@@ -48,11 +48,11 @@ bool GuessChecker::guessIsPart ( string element , list<string> setList ) {
    return (guessIsEqual( element , MySubSet )
          || guessIsPart( element , setList ));
 }
-bool GuessChecker::guessIsEqual ( string element , string set ) {
-   if ( set.size() == 1 )
-      return (element == set);
+bool GuessChecker::guessIsEqual ( string element , string Set ) {
+   if ( Set.size() == 1 )
+      return (element == Set);
    else
-      return ((element == set) || guessIsPart( element , set ));
+      return ((element == Set) || guessIsPart( element , Set ));
 }
 
 #endif /* RECURSIVEWORDCHECKER_HPP_ */
