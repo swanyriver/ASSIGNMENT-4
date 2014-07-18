@@ -76,7 +76,6 @@ set<string> GuessChecker::ElementsMissed(string phrase, set<string> guessesMade)
       phraseLetters = NextSmallestSubSets(phraseWords.front()); //get letters
 
       while(!phraseLetters.empty() ){
-            cout << "adding " << phraseLetters.front();
             piecesOfPhrase.insert(phraseLetters.front());
             phraseLetters.pop_front();
       }
@@ -85,10 +84,11 @@ set<string> GuessChecker::ElementsMissed(string phrase, set<string> guessesMade)
    //make pieces of set the union of PiecesofPhrase and Guesses
    set<string>::iterator lookup = guessesMade.begin();
    for(int x=0;x<guessesMade.size();x++){
-      if(piecesOfPhrase.count(*lookup)==0)
+      if(swansonUtil::ExistsInSet(*lookup,piecesOfPhrase))
          piecesOfPhrase.erase(*lookup);
       lookup++;
    }
+
 
    return piecesOfPhrase;
 }

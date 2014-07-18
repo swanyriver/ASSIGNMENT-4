@@ -16,14 +16,17 @@ using namespace std;
 
 ///special display/////////////////
 
+const int WIDTH_DISPLAY = 75;
+const int SIDEBAR_DISPLAY = 21;
+
 #define LINE_SEPERATE "***************************************************************************"
 #define SECRET_PHRASE_LABEL "*   SECRET PHRASE   * "
 #define GUESS_MADE_LABEL "*   GUESSES MADE    * "
 #define LETTERS_LABEL "* LETTERS AVAILABLE * "
 #define GUESS_REMAINING_LABEL "* GUESSES REMAINING * "
 
-#define LETTERS_UNREAVEALED_LABEL "*  LETTERS MISSING  * "
-#define REVEAL_WORD_LABEL "* SECRET PHRASE WAS * "
+#define LETTERS_UNREAVEALED_LABEL "*  WHAT'S MISSING   * "
+#define REVEAL_WORD_LABEL         "* SECRET PHRASE WAS * "
 
 //////////////////////////////
 
@@ -55,29 +58,28 @@ void HackClearScreen () {
  *
  * ***************************************************************/
 
-string LineWrap(string output, int sideBarWidth, int DisplayWidth){
-   cout << "coming into linewrap with:" << output << endl;
+string LineWrap ( string output , int sideBarWidth , int DisplayWidth ) {
+   //cout << "coming into linewrap with:" << output << endl;
 
-   if(output.length()<DisplayWidth){
-      output.append(DisplayWidth - output.size() - 1, ' ');
+   if ( output.length() < DisplayWidth ) {
+      output.append( DisplayWidth - output.size() - 1 , ' ' );
       output += "*";
       return output;
-   }
-   else{
-      int lastSpace = output.find_last_of(' ', DisplayWidth-1);
-      string thisLine = output.substr(0,lastSpace);
-      output.erase(0,lastSpace);
+   } else {
+      int lastSpace = output.find_last_of( ' ' , DisplayWidth - 1 );
+      string thisLine = output.substr( 0 , lastSpace );
+      output.erase( 0 , lastSpace );
 
-      cout << "output:" << output << endl << "thisline:" << thisLine << endl;
+      //cout << "output:" << output << endl << "thisline:" << thisLine << endl;
       //cout << "remaining space:" << DisplayWidth -  thisLine.size() - 1;
-      getchar();
+      //getchar();
 
-      thisLine.append(DisplayWidth - thisLine.size() - 1, ' ');
+      thisLine.append( DisplayWidth - thisLine.size() - 1 , ' ' );
       thisLine += "*\n";
 
-      output.insert(0,sideBarWidth,'*');
+      output.insert( 0 , sideBarWidth , '*' );
 
-      return thisLine + LineWrap(output,sideBarWidth,DisplayWidth);
+      return thisLine + LineWrap( output , sideBarWidth , DisplayWidth );
    }
 }
 
@@ -91,27 +93,21 @@ string LineWrap(string output, int sideBarWidth, int DisplayWidth){
  *
  * ***************************************************************/
 
-void display ( int guessRemaining, string revealPhrase, string message , set<string> GuessesMade ) {
-
-   //todo check width of phrase, and guesses made strings, wrap and add *
-
-   const int WIDTH_DISPLAY = 75;
-   const int SIDEBAR_DISPLAY = 21;
+void display ( int guessRemaining , string revealPhrase , string message ,
+      set<string> guessesMade ) {
 
    string secretPhraseLine, lettersLine, guessesLine, guessRemainingLine;
    string lettersRemainingLine, phraseRevealLine;
    string messageLine;
+   string wordGuessesMadeLine;
 
    //build secret word string
    secretPhraseLine = SECRET_PHRASE_LABEL;
-   secretPhraseLine = LineWrap(secretPhraseLine + revealPhrase,SIDEBAR_DISPLAY,WIDTH_DISPLAY);
-   /*secretPhraseLine += revealPhrase;
-   secretPhraseLine.append( WIDTH_DISPLAY - secretPhraseLine.length() - 1 ,
-         ' ' );
-   secretPhraseLine += "*";
-*/
+   secretPhraseLine = LineWrap( secretPhraseLine + revealPhrase ,
+         SIDEBAR_DISPLAY , WIDTH_DISPLAY );
+
    /*cout << endl << secretPhraseLine << endl;
-   getchar();*/
+    getchar();*/
 
    //build letters available & guesses made string
    lettersLine = LETTERS_LABEL;
@@ -120,7 +116,7 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
 
       //for each letter place a letter or empty space, acording to guesses
       if ( swansonUtil::ExistsInSet( swansonString::GetString( currentChar ) ,
-            GuessesMade ) ) {
+            guessesMade ) ) {
          guessesLine.push_back( currentChar );
          guessesLine += " ";
          lettersLine += "  ";
@@ -134,10 +130,24 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
    lettersLine += "*";
 
    /*cout << endl << guessesLine << endl;
-   cout << endl << lettersLine << endl;
-   getchar();*/
+    cout << endl << lettersLine << endl;
+    getchar();*/
 
-   //todo add words guessed line!!
+   wordGuessesMadeLine.append( SIDEBAR_DISPLAY , '*' );
+   string guesses;
+   set<string>::iterator lookup = guessesMade.begin();
+   for ( int x = 0 ; x < guessesMade.size() ; x++ ) {
+      if ( (*lookup).size() > 1 )
+         guesses += *lookup + ", ";
+      lookup++;
+   }
+   if ( guesses.empty() )
+      wordGuessesMadeLine.append( WIDTH_DISPLAY - SIDEBAR_DISPLAY , '*' );
+   else {
+      guesses.erase( guesses.size() - 2 , 2 ); //remove final ", "
+      wordGuessesMadeLine = LineWrap( wordGuessesMadeLine + " " + guesses ,
+            SIDEBAR_DISPLAY , WIDTH_DISPLAY );
+   }
    //allow display to grow if words get larger than one line
    //they will be alpha sorted
 
@@ -146,12 +156,11 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
    for ( int i = 0 ; i < guessRemaining ; i++ ) {
       guessRemainingLine += "? ";
    }
-   guessRemainingLine.append( WIDTH_DISPLAY - guessRemainingLine.length() - 1 ,
-         ' ' );
-   guessRemainingLine += "*";
+   guessRemainingLine = LineWrap( guessRemainingLine , SIDEBAR_DISPLAY ,
+         WIDTH_DISPLAY );
 
-  /* cout << endl << guessRemainingLine << endl;
-   getchar();*/
+   /* cout << endl << guessRemainingLine << endl;
+    getchar();*/
 
    //build message line
    messageLine = LINE_SEPERATE;
@@ -162,10 +171,10 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
    }
 
    /*cout << endl << messageLine << endl;
-   getchar();*/
+    getchar();*/
 
    //output display
-   ClearScreen();  //adjust pointer for this
+   ClearScreen();
    cout << LINE_SEPERATE << endl;
    cout << LINE_SEPERATE << endl;
    cout << secretPhraseLine << endl;
@@ -174,55 +183,39 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
    cout << LINE_SEPERATE << endl;
    cout << guessesLine << endl;
    cout << LINE_SEPERATE << endl;
+   cout << wordGuessesMadeLine << endl;
+   cout << LINE_SEPERATE << endl;
    cout << guessRemainingLine << endl;
    cout << LINE_SEPERATE << endl;
    cout << messageLine << endl;
    cout << LINE_SEPERATE << endl;
 
-
 }
 
-void EndGameDisplay(string secretPhrase, set<string> guesses){
+void EndGameDisplay ( string secretPhrase , set<string> guesses ) {
 
-   string LettersMissed = "you missed:";
+   //todo construct special display
 
-   set<string> missed = GuessChecker::ElementsMissed(secretPhrase, guesses);
+   string LettersMissedLine = LETTERS_UNREAVEALED_LABEL;
+   string secretPhraseLine = REVEAL_WORD_LABEL + secretPhrase;
+
+   set<string> missed = GuessChecker::ElementsMissed( secretPhrase , guesses );
 
    set<string>::iterator lookup = missed.begin();
-   for(int x=0;x<missed.size();x++){
-      LettersMissed += *lookup++ + " ";
+   for ( int x = 0 ; x < missed.size() ; x++ ) {
+      LettersMissedLine += *lookup++ + " ";
    }
-   cout << endl << LettersMissed;
 
+   LettersMissedLine = LineWrap( LettersMissedLine , SIDEBAR_DISPLAY ,
+         WIDTH_DISPLAY );
+   secretPhraseLine = LineWrap( secretPhraseLine , SIDEBAR_DISPLAY ,
+         WIDTH_DISPLAY );
 
-   /*///special end of game display
-    if ( gameLost ) {
-    //build letters remaining line
-    lettersRemainingLine = LETTERS_UNREAVEALED_LABEL;
-    for ( int index = 0 ; index < SecretWord.length() ; index++ ) {
-    char letter = SecretWord.at( index );
-    if ( !GuessesMade[at( letter )] ) {
-    lettersRemainingLine.push_back( letter );
-    lettersRemainingLine += " ";
-    } else
-    lettersRemainingLine += "- ";
-    }
-    lettersRemainingLine.append(
-    WIDTH_DISPLAY - lettersRemainingLine.length() - 1 , ' ' );
-    lettersRemainingLine += "*";
+   cout << secretPhraseLine << endl;
+   cout << LINE_SEPERATE << endl;
+   cout << LettersMissedLine << endl;
+   cout << LINE_SEPERATE << endl;
 
-    //build secret word reveal line
-    phraseRevealLine = REVEAL_WORD_LABEL;
-    phraseRevealLine += SecretWord;
-    phraseRevealLine.append( WIDTH_DISPLAY - phraseRevealLine.length() - 1 ,
-    ' ' );
-    phraseRevealLine += "*";
-
-    //swap lines for output
-    lettersLine = lettersRemainingLine;
-    guessRemainingLine = phraseRevealLine;
-
-    }*/
 }
 
 /**************************************************************

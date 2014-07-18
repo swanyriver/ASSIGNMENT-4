@@ -19,14 +19,13 @@
 using namespace std;
 
 ///global variables /////////////////////
-//const int MAX_GUESSES = 12;
-const int MAX_GUESSES = 4;
+const int MAX_GUESSES = 2;
 const int MAX_WORDS = 5;
 const int MIN_WORDS = 3;
 //string literals
 string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
-string LOST_GAME = "Congratulations, you got the Secret Phrase";
-string WON_GAME = "You were close, but you didn't guess the Secret Phrase";
+string WON_GAME = "Congratulations, you got the Secret Phrase";
+string LOST_GAME = "You were close, but you didn't guess the Secret Phrase";
 
 //global objects//////
 Dictionary myDict;
@@ -38,18 +37,19 @@ void display ( int guessRemaining , string revealPhrase , string message ,
 
 //menu item declarations
 void PlayGame ();
-void MobyDict(){
+void MobyDict () {
    //construcs a dict of 6 letter long words from unformatted file "moby.txt"
    myDict = ThemeDictionary( 6 , "moby.txt" );
-   if (!myDict.Filled()) myDict = Dictionary( PreFabDict::getSet() );
+   if ( !myDict.Filled() )
+      myDict = Dictionary( PreFabDict::getSet() );
 }
-void PlainDict(){
+void PlainDict () {
    myDict = Dictionary( 6 ); //Constructs a dict of 6 letter long words
-   if (!myDict.Filled()) myDict = Dictionary( PreFabDict::getSet() );
+   if ( !myDict.Filled() )
+      myDict = Dictionary( PreFabDict::getSet() );
 }
 
 //todo add arg reader for -s and -d   (clear screen off, and dictionary off)
-//todo add menu for selecting theme dictionary, or entering your own
 
 int main ( int argc , char* argv[] ) {
 
@@ -59,24 +59,25 @@ int main ( int argc , char* argv[] ) {
 
    myDict = Dictionary( PreFabDict::getSet() ); //Constructs BU dict
 
-
    //local variables/objects
+   //todo add menu for selecting theme dictionary, or entering your own
    Menu myMenu( Banner() );
    myMenu.demoAllItem = false;
 
-   myMenu.addItem(MobyDict,"Moby.txt","setting dictionary to Moby Dick");
-   myMenu.addItem(PlainDict,"Dictionary.txt","setting dictionary to plain");
+   myMenu.addItem( MobyDict , "Moby.txt" , "setting dictionary to Moby Dick" );
+   myMenu.addItem( PlainDict , "Dictionary.txt" ,
+         "setting dictionary to plain" );
 
-   MenuItem playGameItem(PlayGame,"Play Game","intro");
+   MenuItem playGameItem( PlayGame , "Play Game" , "intro" );
    playGameItem.hasIntro = false;
    playGameItem.itemRepeat = false;
-   myMenu.addItem(playGameItem);
+   myMenu.addItem( playGameItem );
 
    //myMenu.addItem(PlayGame,"play game","welcome to game");
 
    //myMenu.showMenu();
+   PlainDict();
    PlayGame();
-
 
    return 0;
 }
@@ -89,7 +90,6 @@ void PlayGame () {
    //initializations
    swansonUtil::SeedRandom();
 
-
    do {
       //use dictionary to make phrase
       string phrase;
@@ -99,15 +99,15 @@ void PlayGame () {
       }
       phrase.erase( phrase.length() - 1 , 1 ); //remove extra space
 
-      //tsting line wrap
-      phrase = "this is my big dumb very long long long string to bge guessed lets see how it goes it is much longer than it should be";
+      //testing line wrap
+      //phrase = "this is my big dumb very long long long string to bge guessed lets see how it goes it is much longer than it should be";
 
       //instance a new game object
       PhraseGame myGame( myDict.GetSet() , phrase , MAX_GUESSES );
 
       //initialize game state and display welcome screen
-      display( MAX_GUESSES , myGame.GetRevealPhrase() ,
-            STARTGAME_MESSAGE , myGame.GuessesMade() );
+      display( MAX_GUESSES , myGame.GetRevealPhrase() , STARTGAME_MESSAGE ,
+            myGame.GuessesMade() );
 
       do {
          //get a guess from user
@@ -118,15 +118,23 @@ void PlayGame () {
                nextGuess.message , myGame.GuessesMade() );
 
          //testing
-         cout << endl << "secret is:[" << myGame.GetSecretPhrase() << "]";
+         //cout << endl << "secret is:[" << myGame.GetSecretPhrase() << "]";
 
          //keep guessing if not solved, or remaining guesses
       } while ( nextGuess.revealedPhrase != myGame.GetSecretPhrase()
             && nextGuess.guesesRemaining > 0 );
 
-      //todo calculate win or loose
-      //todo construct special display
-      EndGameDisplay(phrase,myGame.GuessesMade());
+      //output final results
+      if ( myGame.GetRevealPhrase() == myGame.GetSecretPhrase() ){
+         display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
+            WON_GAME , myGame.GuessesMade() );
+      }else{
+         display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
+            LOST_GAME , myGame.GuessesMade() );
+         EndGameDisplay( phrase , myGame.GuessesMade() );
+      }
+
+
 
       //offer to play again
    } while ( swansonInput::yesNo( "Play again" ) );
