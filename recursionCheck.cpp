@@ -96,7 +96,7 @@ int main () {
       for ( int elementIndex = 0 ; elementIndex < elementNum ;
             ++elementIndex ) {
          cout << " " << elements[elementIndex] << ":"
-               << GuessChecker::guessIsEqual( elements[elementIndex] , sets[setIndex] );
+               << GuessChecker::GuessIsEqual( elements[elementIndex] , sets[setIndex] );
       }
    }
 

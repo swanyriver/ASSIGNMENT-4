@@ -56,7 +56,8 @@ public:
    //public methods
    Guess NextGuess ();
    set<string> GuessesMade () {
-      return mGuesseesMade;}
+      return mGuesseesMade;
+   }
    //use for valid letters printout
 
    ///constructors
@@ -79,9 +80,8 @@ string PhraseGame::GUESS_PROMPT =
 string PhraseGame::NOT_IN_DICT =
       "There is no possible way for that guess to be right so I won't count it against you";
 string PhraseGame::GUESSED_BEFORE = "You have already guessed that";
-string PhraseGame::CORRECT_GUESS = "Good Job, that was in there"; //todo adapt to do printf guess and
+string PhraseGame::CORRECT_GUESS = "Good Job, that was in there";
 string PhraseGame::WRONG_GUESS = "Nope,  Thats not it";
-//todo  GUESS CORRECT,  GUESS INCORECT
 
 ///////phrase game function definitions///////
 
@@ -90,20 +90,22 @@ PhraseGame::Guess PhraseGame::NextGuess () {
 
    myGuess.guesesRemaining = mGuessesRemaining;
 
+   //build reveal string without new guesses
+   myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
+         mGuesseesMade );
+   RemoveExtraSpaces( myGuess.revealedPhrase );
+
+
    //get input from user
    myGuess.guess = swansonInput::GetString( "what is your guess:" );
    RemoveExtraSpaces( myGuess.guess );
    swansonString::LowerCasePreserve( myGuess.guess );
    //determine guess is valid, &&|| correct
 
-   myGuess.succesful = GuessChecker::guessIsValid( myGuess.guess ,
+   myGuess.succesful = GuessChecker::GuessIsValid( myGuess.guess ,
          mSourceWords );
 
    if ( !myGuess.succesful ) {
-      //build reveal string
-      myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
-            mGuesseesMade );
-      RemoveExtraSpaces( myGuess.revealedPhrase );
 
       myGuess.correct = false;
       myGuess.message = NOT_IN_DICT;
@@ -111,10 +113,6 @@ PhraseGame::Guess PhraseGame::NextGuess () {
    }
 
    if ( swansonUtil::ExistsInSet( myGuess.guess , mGuesseesMade ) ) {
-      //build reveal string
-      myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
-            mGuesseesMade );
-      RemoveExtraSpaces( myGuess.revealedPhrase );
 
       myGuess.succesful = false;
       myGuess.correct = false;
@@ -125,18 +123,11 @@ PhraseGame::Guess PhraseGame::NextGuess () {
 
    mGuesseesMade.insert( myGuess.guess );
 
-   myGuess.correct = GuessChecker::guessIsEqual( myGuess.guess ,
+   myGuess.correct = GuessChecker::GuessIsEqual( myGuess.guess ,
          mSecretPhrase );
 
-   //build reveal string with new guesses
-   myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
-         mGuesseesMade );
-   RemoveExtraSpaces( myGuess.revealedPhrase );
 
-   if ( !myGuess.correct ) {
-      myGuess.message = WRONG_GUESS;
-      myGuess.guesesRemaining = --mGuessesRemaining;
-   } else {
+   if ( myGuess.correct ) {
       myGuess.message = CORRECT_GUESS;
       int occurances = swansonString::NumOccurances( mSecretPhrase ,
             myGuess.guess );
@@ -144,9 +135,26 @@ PhraseGame::Guess PhraseGame::NextGuess () {
          myGuess.message += " " + swansonString::GetString( occurances )
                + " times";
       }
+
+      //word guessed already, and letter not in other words
+      if ( myGuess.guess.size() == 1
+            && occurances
+                  <= swansonString::NumOccurances( myGuess.revealedPhrase ,
+                        myGuess.guess ) )
+         myGuess.correct = false;
+
    }
 
-   //string mRevealedPhrase;  //todo build method in recurse  //use WORDCHECKER
+   if ( !myGuess.correct ) {
+      myGuess.message = WRONG_GUESS;
+      myGuess.guesesRemaining = --mGuessesRemaining;
+   }
+
+
+   //check for words where all letters have been guessed
+   GuessChecker::AddWholeWordsToGuesses(mSecretPhrase, mGuesseesMade);
+
+   //build reveal phrase
    myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
          mGuesseesMade );
    RemoveExtraSpaces( myGuess.revealedPhrase );
