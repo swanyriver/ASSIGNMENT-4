@@ -32,6 +32,7 @@ public:
 
    static void SeperateWords ( string myString , list<string>& seperateWords );
    static string LowerCase ( string caseString );
+   static void LowerCasePreserve ( string &caseString );
    static string UpperCase ( string caseString );
 
    template <typename Type>
@@ -204,7 +205,7 @@ void swansonString::SeperateWords ( string myString ,
  *
  *    entry: non void string
  *
- *    exit: string with any alpha chars between [a-z]
+ *    exit: string with exclusivly alpha chars between [a-z]
  ******************************************************************************/
 string swansonString::LowerCase ( string caseString ) {
    string lowerCaseString = "";
@@ -217,6 +218,27 @@ string swansonString::LowerCase ( string caseString ) {
       }
    }
    return lowerCaseString;
+}
+/******************************************************************************
+ *   purpose: convert all letters in string to lower case, while preserving non
+ *             alpha characters
+ *
+ *    entry: non void string
+ *
+ *    exit: string with any alpha chars between [a-z]
+ ******************************************************************************/
+//todo implement uppercasePreserve
+void swansonString::LowerCasePreserve ( string &caseString ) {
+   //string lowerCaseString = "";
+   for ( int i = 0 ; i < caseString.length() ; i++ ) {
+      if ( swansonString::IsALetter( caseString.at( i ) ) ) {
+         if ( caseString.at( i ) >= 'A' && caseString.at( i ) <= 'Z' ) {
+            stringstream ss;
+            ss << char ( (caseString.at( i ) + ('a' - 'A')) );
+            caseString.replace(i,1,ss.str());
+         }
+      }
+   }
 }
 
 /******************************************************************************

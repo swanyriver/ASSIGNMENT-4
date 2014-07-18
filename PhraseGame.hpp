@@ -40,6 +40,10 @@ public:
 
 private:
 
+   //error messages
+   //not letter // not word //or a word in it is not in the dictionary
+   static string NOT_IN_DICT;
+
    //global variables
    int mGuessesRemaining;
    string mSecretPhrase;
@@ -75,12 +79,22 @@ public:
    }
 };
 
+string PhraseGame::NOT_IN_DICT = "There is no possible way for that guess to be right so I won't count it against you";
+
+
 ///////phrase game function definitions///////
 
 PhraseGame::Guess PhraseGame::NextGuess () {
    PhraseGame::Guess myGuess;
 
-   myGuess.guess = GetUserGuess();
+   //get input from user
+   myGuess.guess = swansonInput::GetString("what is your guess:");
+   swansonString::LowerCasePreserve(myGuess.guess);
+   //determine guess is valid, &&|| correct
+
+   myGuess.succesful = GuessChecker::guessIsValid(myGuess.guess, mSourceWords);
+
+
    //bool succesful;
    //string errorMsg;
    //string mRevealedPhrase;
@@ -88,7 +102,8 @@ PhraseGame::Guess PhraseGame::NextGuess () {
 
    //string guess;
    //bool correct;
-   //int GuesesRemaining;
+   mGuesseesMade.insert(myGuess.guess);
+   myGuess.GuesesRemaining = --mGuessesRemaining;
    //string mRevealedPhrase;
    ///////////////succesful input
 
@@ -104,14 +119,16 @@ PhraseGame::Guess PhraseGame::NextGuess () {
    return myGuess;
 }
 
+
+
 string PhraseGame::GetRevealedPhrase () {
    return " part 0f -re-v-ea-ed ph-ra-e";
 
 }
 
-string PhraseGame::GetUserGuess () {
-   return swansonInput::GetString("what is your guess:");
-}
+/*string PhraseGame::GetUserGuess () {
+   return
+}*/
 
 bool PhraseGame::CorrectGuess ( string guess ) {
    return true; //use REcuse Checker

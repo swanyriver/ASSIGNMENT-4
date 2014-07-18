@@ -62,7 +62,9 @@ string AllItemsInSet(set<string> myset){
 
 void display(PhraseGame::Guess guess){
    //blackboxing
-   cout << "guesss is:" << guess.guess << endl;
+   cout << endl << "guesss is:" << guess.guess << endl;
+   cout << endl << "guesses remaing:" << guess.GuesesRemaining;
+   cout << endl << "guesses valid:" << guess.succesful;
    cout << endl <<"the phrase set contains: " << AllItemsInSet(guess.PhraseSet);
    cout << endl <<"the guess set contains: " << AllItemsInSet(guess.GuessSet);
    cout << endl <<"the source set contains: " << AllItemsInSet(guess.SourceSet);
