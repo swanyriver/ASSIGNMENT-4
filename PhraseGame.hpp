@@ -62,6 +62,13 @@ public:
    string GetSecretPhrase(){
       return mSecretPhrase;
    }
+   //use for init game display
+   string GetRevealPhrase(){
+      string reveal=  GuessChecker::RevealString( mSecretPhrase ,
+         mGuesseesMade );
+      RemoveExtraSpaces( reveal );
+      return reveal;
+   }
 
 
 
@@ -77,6 +84,7 @@ public:
           ss << letter;
           mSourceWords.insert(string(ss.str()));*/
          mSourceWords.insert( swansonString::GetString( letter ) );
+
       }
    }
 };
@@ -100,13 +108,7 @@ PhraseGame::Guess PhraseGame::NextGuess () {
    myGuess.guesesRemaining = mGuessesRemaining;
 
    //build reveal string without new guesses
-   myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
-         mGuesseesMade );
-   RemoveExtraSpaces( myGuess.revealedPhrase );
-
-
-
-
+   myGuess.revealedPhrase = GetRevealPhrase();
 
    //get input from user
    myGuess.guess = swansonInput::GetString( "what is your guess:" );
@@ -166,10 +168,9 @@ PhraseGame::Guess PhraseGame::NextGuess () {
    //check for words where all letters have been guessed
    GuessChecker::AddWholeWordsToGuesses(mSecretPhrase, mGuesseesMade);
 
-   //build reveal phrase
-   myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
-         mGuesseesMade );
-   RemoveExtraSpaces( myGuess.revealedPhrase );
+   //build reveal phrase //with new guesses
+   myGuess.revealedPhrase = GetRevealPhrase();
+
 
    return myGuess;
 }

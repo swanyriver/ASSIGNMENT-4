@@ -55,6 +55,8 @@ void HackClearScreen () {
  * ***************************************************************/
 void display ( int guessRemaining, string revealPhrase, string message , set<string> GuessesMade ) {
 
+   //todo check width of phrase, and guesses made strings, wrap and add *
+
    const int WIDTH_DISPLAY = 75;
 
    string secretPhraseLine, lettersLine, guessesLine, guessRemainingLine;
@@ -67,6 +69,9 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
    secretPhraseLine.append( WIDTH_DISPLAY - secretPhraseLine.length() - 1 ,
          ' ' );
    secretPhraseLine += "*";
+
+   /*cout << endl << secretPhraseLine << endl;
+   getchar();*/
 
    //build letters available & guesses made string
    lettersLine = LETTERS_LABEL;
@@ -88,6 +93,10 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
    guessesLine += "*";
    lettersLine += "*";
 
+   /*cout << endl << guessesLine << endl;
+   cout << endl << lettersLine << endl;
+   getchar();*/
+
    //todo add words guessed line!!
    //allow display to grow if words get larger than one line
    //they will be alpha sorted
@@ -101,6 +110,9 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
          ' ' );
    guessRemainingLine += "*";
 
+  /* cout << endl << guessRemainingLine << endl;
+   getchar();*/
+
    //build message line
    messageLine = LINE_SEPERATE;
    if ( !message.empty() ) {
@@ -108,6 +120,9 @@ void display ( int guessRemaining, string revealPhrase, string message , set<str
       int pos = WIDTH_DISPLAY / 2.0 - message.length() / 2.0;
       messageLine.replace( pos , message.size() , message );
    }
+
+   /*cout << endl << messageLine << endl;
+   getchar();*/
 
    /*///special end of game display
     if ( gameLost ) {

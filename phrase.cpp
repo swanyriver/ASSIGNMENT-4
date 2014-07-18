@@ -14,6 +14,7 @@
 #include "PreFabDictionary.hpp"
 #include "hangmanDisplay.hpp"
 #include "SwansonObjects/Dictionary.hpp"
+#include "SwansonObjects/menu.hpp"
 
 using namespace std;
 
@@ -27,11 +28,22 @@ string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
 //global objects//////
 Dictionary myDict;
 
-
 ///fuction declarations /////////////////
 
 void display ( int guessRemaining , string revealPhrase , string message ,
       set<string> GuessesMade );
+
+//menu item declarations
+void PlayGame ();
+void MobyDict(){
+   //construcs a dict of 6 letter long words from unformatted file "moby.txt"
+   myDict = ThemeDictionary( 6 , "moby.txt" );
+   if (!myDict.Filled()) myDict = Dictionary( PreFabDict::getSet() );
+}
+void PlainDict(){
+   myDict = Dictionary( 6 ); //Constructs a dict of 6 letter long words
+   if (!myDict.Filled()) myDict = Dictionary( PreFabDict::getSet() );
+}
 
 //todo add arg reader for -s and -d   (clear screen off, and dictionary off)
 //todo add menu for selecting theme dictionary, or entering your own
@@ -42,17 +54,38 @@ int main ( int argc , char* argv[] ) {
    ClearScreen = swansonUtil::ClearScreen;
    //ClearScreen = HackClearScreen; //alternate method;
 
-   //local variables
-   PhraseGame::Guess nextGuess;
    myDict = Dictionary( PreFabDict::getSet() ); //Constructs BU dict
 
-   myDict = Dictionary( 6 ); //Constructs a dict of 6 letter long words
 
-   //construcs a dict of 6 letter long words from unformatted file "moby.txt"
-   myDict = ThemeDictionary( 6 , "moby.txt" );
+   //local variables/objects
+   Menu myMenu( Banner() );
+   myMenu.demoAllItem = false;
+
+   myMenu.addItem(MobyDict,"Moby.txt","setting dictionary to Moby Dick");
+   myMenu.addItem(PlainDict,"Dictionary.txt","setting dictionary to plain");
+
+   MenuItem playGameItem(PlayGame,"Play Game","intro");
+   playGameItem.hasIntro = false;
+   playGameItem.itemRepeat = false;
+   myMenu.addItem(playGameItem);
+
+   //myMenu.addItem(PlayGame,"play game","welcome to game");
+
+   myMenu.showMenu();
+
+
+
+   return 0;
+}
+
+void PlayGame () {
+
+   //local variables/objects
+   PhraseGame::Guess nextGuess;
 
    //initializations
    swansonUtil::SeedRandom();
+
 
    do {
       //use dictionary to make phrase
@@ -63,19 +96,13 @@ int main ( int argc , char* argv[] ) {
       }
       phrase.erase( phrase.length() - 1 , 1 ); //remove extra space
 
+
       //instance a new game object
       PhraseGame myGame( myDict.GetSet() , phrase , MAX_GUESSES );
 
       //initialize game state and display welcome screen
-      string firstReveal;
-      for (int i = 0; i < phrase.size(); i++) {
-         if(phrase.at(i)!=' ')
-            firstReveal.push_back('-');
-         else firstReveal.push_back(' ');
-      }
-      display( nextGuess.guesesRemaining , firstReveal ,
-               STARTGAME_MESSAGE , myGame.GuessesMade() );
-
+      display( MAX_GUESSES , myGame.GetRevealPhrase() ,
+            STARTGAME_MESSAGE , myGame.GuessesMade() );
 
       do {
          //get a guess from user
@@ -98,7 +125,6 @@ int main ( int argc , char* argv[] ) {
       //offer to play again
    } while ( swansonInput::yesNo( "Play again" ) );
 
-   return 0;
 }
 
 ///////////////////////////////////
