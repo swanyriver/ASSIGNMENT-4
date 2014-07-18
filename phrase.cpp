@@ -38,7 +38,8 @@ int main(int argc , char* argv[]){
       PhraseGame::Guess nextGuess = myGame.NextGuess();
 
       display(nextGuess, myGame.GuessesMade());
-   } while (swansonInput::yesNo("keep guessing"));
+//   } while (swansonInput::yesNo("keep guessing"));
+   } while (true);
 
 
 
@@ -63,14 +64,16 @@ string AllItemsInSet(set<string> myset){
 void display(PhraseGame::Guess guess, set<string> GuessesMade){
    //blackboxing
    cout << endl << "guesss is:" << guess.guess << endl;
-   cout << endl << "guesses remaing:" << guess.GuesesRemaining;
+   cout << endl << "guesses remaing:" << guess.guesesRemaining;
    cout << endl << "guesses valid:" << guess.succesful;
+   cout << endl << "guesses correct:" << guess.correct;
    cout << endl << "message is:" << guess.message;
    cout << endl << "there are " << swansonString::NumOccurances("my secret phrase my", guess.guess)
          << " occurances of " << guess.guess << " in :my secret phrase my";
    cout << endl <<"the phrase set contains: " << AllItemsInSet(guess.PhraseSet);
    cout << endl <<"the guess set contains: " << AllItemsInSet(GuessesMade);
    cout << endl <<"the source set contains: " << AllItemsInSet(guess.SourceSet);
+   cout << endl << endl <<"secret phrase: [" << guess.revealedPhrase << "]";
 }
 
 
