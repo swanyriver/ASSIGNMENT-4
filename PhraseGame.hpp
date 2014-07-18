@@ -42,8 +42,6 @@ private:
    static string CORRECT_GUESS;
    static string WRONG_GUESS;
    static string OCCURANCES;
-   static string STARTGAME_GUESS;
-   static string STARTGAME_MESSAGE;
 
    //global variables
    int mGuessesRemaining;
@@ -56,7 +54,7 @@ private:
 
 public:
    //public methods
-   Guess NextGuess (bool startGame = false);
+   Guess NextGuess ();
    set<string> GuessesMade () {
       return mGuesseesMade;
    }
@@ -92,14 +90,11 @@ string PhraseGame::NOT_IN_DICT =
 string PhraseGame::GUESSED_BEFORE = "You have already guessed that";
 string PhraseGame::CORRECT_GUESS = "Good Job, that was in there";
 string PhraseGame::WRONG_GUESS = "Nope,  Thats not it";
-//designed to count as an invalid guess, guesses wont be decremented
-//and reveal string will be built
-string PhraseGame::STARTGAME_GUESS ="Start! 4564"; //ACTUALLY NOT NEEDED, I CAN RETURN EARLY!  //todo remove
-string PhraseGame::STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
+
 
 ///////phrase game function definitions///////
 
-PhraseGame::Guess PhraseGame::NextGuess ( bool startGame ) {
+PhraseGame::Guess PhraseGame::NextGuess () {
    PhraseGame::Guess myGuess;
 
    myGuess.guesesRemaining = mGuessesRemaining;
@@ -109,20 +104,7 @@ PhraseGame::Guess PhraseGame::NextGuess ( bool startGame ) {
          mGuesseesMade );
    RemoveExtraSpaces( myGuess.revealedPhrase );
 
-   //first game screen
-   if(startGame){
-      /*myGuess.revealedPhrase ="";
-      for (int i = 0; i < mSecretPhrase.size(); i++) {
-         if(mSecretPhrase.at(i)!=' ')
-            myGuess.revealedPhrase.push_back('-');
-         else myGuess.revealedPhrase.push_back(' ');
-      }*/
-      //myGuess.revealedPhrase = mSecretPhrase;
 
-      myGuess.succesful = false;
-      myGuess.message = STARTGAME_MESSAGE;
-      return myGuess;  //no input on the first screen
-   }
 
 
 

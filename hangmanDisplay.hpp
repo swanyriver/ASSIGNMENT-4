@@ -53,12 +53,9 @@ void HackClearScreen () {
  * Purpose: inform player 2 of his status in the game
  *
  * ***************************************************************/
-void display ( PhraseGame::Guess guess , set<string> GuessesMade ) {
+void display ( int guessRemaining, string revealPhrase, string message , set<string> GuessesMade ) {
 
    const int WIDTH_DISPLAY = 75;
-
-   string message = guess.message;
-
 
    string secretPhraseLine, lettersLine, guessesLine, guessRemainingLine;
    string lettersRemainingLine, phraseRevealLine;
@@ -66,7 +63,7 @@ void display ( PhraseGame::Guess guess , set<string> GuessesMade ) {
 
    //build secret word string
    secretPhraseLine = SECRET_PHRASE_LABEL;
-   secretPhraseLine += guess.revealedPhrase;
+   secretPhraseLine += revealPhrase;
    secretPhraseLine.append( WIDTH_DISPLAY - secretPhraseLine.length() - 1 ,
          ' ' );
    secretPhraseLine += "*";
@@ -97,7 +94,7 @@ void display ( PhraseGame::Guess guess , set<string> GuessesMade ) {
 
    //build guesses remaining string
    guessRemainingLine = GUESS_REMAINING_LABEL;
-   for ( int i = 0 ; i < guess.guesesRemaining ; i++ ) {
+   for ( int i = 0 ; i < guessRemaining ; i++ ) {
       guessRemainingLine += "? ";
    }
    guessRemainingLine.append( WIDTH_DISPLAY - guessRemainingLine.length() - 1 ,

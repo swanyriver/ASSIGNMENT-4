@@ -21,10 +21,17 @@ using namespace std;
 const int MAX_GUESSES = 12;
 const int MAX_WORDS = 5;
 const int MIN_WORDS = 3;
+//string literals
+string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
+
+//global objects//////
+Dictionary myDict;
+
 
 ///fuction declarations /////////////////
 
-void display ( PhraseGame::Guess guess , set<string> GuessesMade );
+void display ( int guessRemaining , string revealPhrase , string message ,
+      set<string> GuessesMade );
 
 //todo add arg reader for -s and -d   (clear screen off, and dictionary off)
 //todo add menu for selecting theme dictionary, or entering your own
@@ -37,39 +44,46 @@ int main ( int argc , char* argv[] ) {
 
    //local variables
    PhraseGame::Guess nextGuess;
-   Dictionary myDict(PreFabDict::getSet()); //contructs BU dict
+   myDict = Dictionary( PreFabDict::getSet() ); //Constructs BU dict
 
-   myDict = Dictionary(6); //construcs a dict of 6 letter long words
+   myDict = Dictionary( 6 ); //Constructs a dict of 6 letter long words
 
-   //construcs a dict of 6 letter long words from unformated file "moby.txt"
-   myDict = ThemeDictionary(6,"moby.txt");
+   //construcs a dict of 6 letter long words from unformatted file "moby.txt"
+   myDict = ThemeDictionary( 6 , "moby.txt" );
 
    //initializations
-   //swansonUtil::SeedRandom();
+   swansonUtil::SeedRandom();
 
    do {
       //use dictionary to make phrase
       string phrase;
-      int numWords = swansonUtil::GetRandomInRange(MIN_WORDS,MAX_WORDS);
-      for (int i = 0; i < numWords; ++i) {
-         phrase+=myDict.GetRandomWord() + " ";
+      int numWords = swansonUtil::GetRandomInRange( MIN_WORDS , MAX_WORDS );
+      for ( int i = 0 ; i < numWords ; ++i ) {
+         phrase += myDict.GetRandomWord() + " ";
       }
-      phrase.erase(phrase.length()-1,1); //remove extra space
+      phrase.erase( phrase.length() - 1 , 1 ); //remove extra space
 
       //instance a new game object
-      PhraseGame myGame( myDict.GetSet() , phrase ,
-            MAX_GUESSES );
+      PhraseGame myGame( myDict.GetSet() , phrase , MAX_GUESSES );
 
       //initialize game state and display welcome screen
-      nextGuess = myGame.NextGuess( true );
-      display( nextGuess , myGame.GuessesMade() );
+      string firstReveal;
+      for (int i = 0; i < phrase.size(); i++) {
+         if(phrase.at(i)!=' ')
+            firstReveal.push_back('-');
+         else firstReveal.push_back(' ');
+      }
+      display( nextGuess.guesesRemaining , firstReveal ,
+               STARTGAME_MESSAGE , myGame.GuessesMade() );
+
 
       do {
          //get a guess from user
          nextGuess = myGame.NextGuess();
 
          //display results
-         display( nextGuess , myGame.GuessesMade() );
+         display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
+               nextGuess.message , myGame.GuessesMade() );
 
          //testing
          cout << endl << "secret is:[" << myGame.GetSecretPhrase() << "]";
@@ -87,7 +101,10 @@ int main ( int argc , char* argv[] ) {
    return 0;
 }
 
-//black box && STUB testing
+///////////////////////////////////
+//black box && STUB testing/////////
+///////////////////////////////////
+
 /*void display(PhraseGame::Guess guess, set<string> GuessesMade){
  //blackboxing
  cout << endl << "guesss is:" << guess.guess << endl;
