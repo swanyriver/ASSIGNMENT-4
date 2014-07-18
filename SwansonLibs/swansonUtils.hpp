@@ -16,6 +16,7 @@
 #include <list>
 #include <set>
 using std::list;
+using std::set;
 
 class swansonUtil {
 public:

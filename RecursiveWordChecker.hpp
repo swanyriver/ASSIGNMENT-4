@@ -15,9 +15,10 @@ using namespace std;
 class GuessChecker {
 public:
    static bool guessIsEqual ( string element , string set );
+   static list<string> nextSmallestSubSets ( string set ); //used in other plaecs to creat recursion
+
    //todo implement, guess is valid, check if all pieces, words and letters, are in the dictionary
 private:
-   static list<string> nextSmallestSubSets ( string set );
    static bool guessIsPart ( string element , list<string> setList );
    static bool guessIsPart ( string element , string set );
 };
