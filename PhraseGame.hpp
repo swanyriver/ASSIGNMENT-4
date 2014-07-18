@@ -110,7 +110,7 @@ PhraseGame::Guess PhraseGame::NextGuess () {
    myGuess.revealedPhrase = GetRevealPhrase();
 
    //get input from user
-   myGuess.guess = swansonInput::GetString( "what is your guess:" );
+   myGuess.guess = swansonInput::GetString( GUESS_PROMPT );
    RemoveExtraSpaces( myGuess.guess );
    swansonString::LowerCasePreserve( myGuess.guess );
    //determine guess is valid, &&|| correct
