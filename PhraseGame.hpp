@@ -42,6 +42,8 @@ private:
    static string CORRECT_GUESS;
    static string WRONG_GUESS;
    static string OCCURANCES;
+   static string STARTGAME_GUESS;
+   static string STARTGAME_MESSAGE;
 
    //global variables
    int mGuessesRemaining;
@@ -54,11 +56,17 @@ private:
 
 public:
    //public methods
-   Guess NextGuess ();
+   Guess NextGuess (bool startGame = false);
    set<string> GuessesMade () {
       return mGuesseesMade;
    }
    //use for valid letters printout
+   string GetSecretPhrase(){
+      return mSecretPhrase;
+   }
+
+
+
 
    ///constructors
    PhraseGame ( set<string> SourceWords , string SecretPhrase , int maxGuesses ) :
@@ -75,17 +83,23 @@ public:
    }
 };
 
+//string literals,  this "out of line" definition is to avoid globality with
+// using #define
 string PhraseGame::GUESS_PROMPT =
       "Enter a letter, or try to guess a word in the phrase,  or go for gold and guess the whole phrase \nWhat is your guess:";
 string PhraseGame::NOT_IN_DICT =
-      "There is no possible way for that guess to be right so I won't count it against you";
+      "There is no way for that guess to be right";
 string PhraseGame::GUESSED_BEFORE = "You have already guessed that";
 string PhraseGame::CORRECT_GUESS = "Good Job, that was in there";
 string PhraseGame::WRONG_GUESS = "Nope,  Thats not it";
+//designed to count as an invalid guess, guesses wont be decremented
+//and reveal string will be built
+string PhraseGame::STARTGAME_GUESS ="Start! 4564"; //ACTUALLY NOT NEEDED, I CAN RETURN EARLY!  //todo remove
+string PhraseGame::STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
 
 ///////phrase game function definitions///////
 
-PhraseGame::Guess PhraseGame::NextGuess () {
+PhraseGame::Guess PhraseGame::NextGuess ( bool startGame ) {
    PhraseGame::Guess myGuess;
 
    myGuess.guesesRemaining = mGuessesRemaining;
@@ -94,6 +108,22 @@ PhraseGame::Guess PhraseGame::NextGuess () {
    myGuess.revealedPhrase = GuessChecker::RevealString( mSecretPhrase ,
          mGuesseesMade );
    RemoveExtraSpaces( myGuess.revealedPhrase );
+
+   //first game screen
+   if(startGame){
+      /*myGuess.revealedPhrase ="";
+      for (int i = 0; i < mSecretPhrase.size(); i++) {
+         if(mSecretPhrase.at(i)!=' ')
+            myGuess.revealedPhrase.push_back('-');
+         else myGuess.revealedPhrase.push_back(' ');
+      }*/
+      //myGuess.revealedPhrase = mSecretPhrase;
+
+      myGuess.succesful = false;
+      myGuess.message = STARTGAME_MESSAGE;
+      return myGuess;  //no input on the first screen
+   }
+
 
 
    //get input from user
