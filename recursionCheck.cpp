@@ -6,16 +6,14 @@
  */
 
 #include <iostream>
-#include <string>
-#include <cstring>
-#include "SwansonLibs/swansonString.hpp"
+#include "RecursiveWordChecker.hpp"
 using namespace std;
 
-const string PHRASE = "my secret phrase";
+/*const string PHRASE = "my secret phrase";
 //const char* phraseWords[] = {"my","secret","phrase"};
 const int numWords = 3;
 
-/*bool isInPhrase (char* element, char* set){
+bool isInPhrase (char* element, char* set){
  //for all elements
 
  //if there are spaces, then break down is in phrase
@@ -25,7 +23,7 @@ const int numWords = 3;
  bool subsetExists(char* elemnent, char* set){
  //break down set, compare element
 
- }*/
+ }
 //bool containedWithin(string element, string set, int position = 0);
 //bool areEqual (string element, string set);
 list<string> nextSmallestSubSets ( string set );
@@ -63,7 +61,7 @@ bool guessIsEqual ( string element , string set ) {
       return (element == set);
    else
       return ((element == set) || guessIsPart( element , set ));
-}
+}*/
 
 /*
  bool areEqual (string element, string set){
@@ -98,7 +96,7 @@ int main () {
       for ( int elementIndex = 0 ; elementIndex < elementNum ;
             ++elementIndex ) {
          cout << " " << elements[elementIndex] << ":"
-               << guessIsEqual( elements[elementIndex] , sets[setIndex] );
+               << GuessChecker::guessIsEqual( elements[elementIndex] , sets[setIndex] );
       }
    }
 
