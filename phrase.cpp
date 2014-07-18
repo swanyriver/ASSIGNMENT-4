@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iterator> //for testing only
 #include <set>
+#include <cstdlib>
 
 #include "PhraseGame.hpp"
 #include "PreFabDictionary.hpp"
@@ -19,16 +20,27 @@
 using namespace std;
 
 ///global variables /////////////////////
-const int MAX_GUESSES = 2;
+const int MAX_GUESSES = 9;
 const int MAX_WORDS = 5;
 const int MIN_WORDS = 3;
+const int MAX_WORD_LENGTH = 6;
 //string literals
-string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
-string WON_GAME = "Congratulations, you got the Secret Phrase";
-string LOST_GAME = "You were close, but you didn't guess the Secret Phrase";
+const string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
+const string WON_GAME = "Congratulations, you got the Secret Phrase";
+const string LOST_GAME =
+      "You were close, but you didn't guess the Secret Phrase";
+const string DICT_INTRO =
+      "The words in this game will be chosen from a dictionary,  You can play with the regular dictionary or use a book for fun flavor,  even add your own file";
+const string CLEAR_INTRO =
+      "This games uses a system call to clear the screen,  if you prefer not then it can do this in an alternative mode";
+
+//todo add menu item text here
 
 //global objects//////
 Dictionary myDict;
+
+Menu DictionaryMenu(DICT_INTRO);
+Menu ClearScreenMenu(CLEAR_INTRO);
 
 ///fuction declarations /////////////////
 
@@ -37,47 +49,104 @@ void display ( int guessRemaining , string revealPhrase , string message ,
 
 //menu item declarations
 void PlayGame ();
+
+//dictionary choices
+void showDictionaryMenu () {
+   DictionaryMenu.showMenu();
+}
+void usePreFabDict(){
+   myDict = Dictionary( PreFabDict::getSet() );
+
+   if(myDict.Filled()){
+      cout << endl << "something strange has happend, we had an empty dictionary"
+            << " but don't worry, we can still play with my limited stored vocabulary";
+      cout << endl << "press anything to continue:";
+      getchar();
+   }else{
+      cout << endl << "something has gone very wrong here, we have no words, we cannot play";
+      cout << endl << "press anything to exit:";
+      exit(1);
+   }
+}
 void MobyDict () {
    //construcs a dict of 6 letter long words from unformatted file "moby.txt"
-   myDict = ThemeDictionary( 6 , "moby.txt" );
-   if ( !myDict.Filled() )
-      myDict = Dictionary( PreFabDict::getSet() );
+   myDict = ThemeDictionary( MAX_WORD_LENGTH , "moby.txt" );
+   if ( !myDict.Filled() ) usePreFabDict();
 }
 void PlainDict () {
-   myDict = Dictionary( 6 ); //Constructs a dict of 6 letter long words
-   if ( !myDict.Filled() )
-      myDict = Dictionary( PreFabDict::getSet() );
+   myDict = Dictionary( MAX_WORD_LENGTH ); //Constructs a dict of 6 letter long words
+   if ( !myDict.Filled() ) usePreFabDict();
+}
+
+//clear screen choices
+void showClearScreenMenu () {
+   ClearScreenMenu.showMenu();
+}
+
+void HackyClearSelected () {
+   ClearScreen = HackClearScreen; //alternate method;
+}
+void SystemClearSelected () {
+   ClearScreen = swansonUtil::ClearScreen;
 }
 
 //todo add arg reader for -s and -d   (clear screen off, and dictionary off)
 
 int main ( int argc , char* argv[] ) {
 
-   //set clearscreen pointer
+   //set clearscreen pointer //system call by default
    ClearScreen = swansonUtil::ClearScreen;
-   //ClearScreen = HackClearScreen; //alternate method;
 
-   myDict = Dictionary( PreFabDict::getSet() ); //Constructs BU dict
+   //initializations
+   swansonUtil::SeedRandom();
+   PlainDict(); //full dictionary by default
 
    //local variables/objects
-   //todo add menu for selecting theme dictionary, or entering your own
+
+   //dict menu
+   DictionaryMenu.demoAllItem = false;
+   DictionaryMenu.menuRepeat = false;
+   MenuItem plain( PlainDict , "normal dictionary" ,
+         "loading the dictionary in" );
+   plain.itemRepeat = false;
+   DictionaryMenu.addItem( plain );
+
+   MenuItem moby( MobyDict , "Moby Dick Words" , "loading Moby Dick in" );
+   moby.itemRepeat = false;
+   DictionaryMenu.addItem( moby );
+
+   //clear menu
+   ClearScreenMenu.menuRepeat = false;
+   ClearScreenMenu.demoAllItem = false;
+   MenuItem onItem( SystemClearSelected , "Use System()" ,
+         "system calibrated" );
+   onItem.itemRepeat = false;
+   ClearScreenMenu.addItem( onItem );
+   MenuItem offItem( HackyClearSelected , "Use Alternate Method" ,
+         "REROUTING BITS AND BYTES" );
+   offItem.itemRepeat = false;
+   ClearScreenMenu.addItem( offItem );
+
    Menu myMenu( Banner() );
    myMenu.demoAllItem = false;
 
-   myMenu.addItem( MobyDict , "Moby.txt" , "setting dictionary to Moby Dick" );
-   myMenu.addItem( PlainDict , "Dictionary.txt" ,
-         "setting dictionary to plain" );
+   MenuItem DictMenuItem( showDictionaryMenu , "Dictionary Settings" , "" );
+   MenuItem ClearMenuItem( showClearScreenMenu , "System() Config" , "" );
+   DictMenuItem.hasIntro = false;
+   ClearMenuItem.hasIntro = false;
+   DictMenuItem.itemRepeat = false;
+   ClearMenuItem.itemRepeat = false;
+   myMenu.addItem(DictMenuItem);
+   myMenu.addItem(ClearMenuItem);
 
-   MenuItem playGameItem( PlayGame , "Play Game" , "intro" );
+   MenuItem playGameItem( PlayGame , "Play Game" , "intro" , "Play Again" );
    playGameItem.hasIntro = false;
-   playGameItem.itemRepeat = false;
+   playGameItem.itemRepeat = true;
    myMenu.addItem( playGameItem );
 
-   //myMenu.addItem(PlayGame,"play game","welcome to game");
+   myMenu.showMenu();
 
-   //myMenu.showMenu();
-   PlainDict();
-   PlayGame();
+   //PlayGame();
 
    return 0;
 }
@@ -87,57 +156,48 @@ void PlayGame () {
    //local variables/objects
    PhraseGame::Guess nextGuess;
 
-   //initializations
-   swansonUtil::SeedRandom();
+   //use dictionary to make phrase
+   string phrase;
+   int numWords = swansonUtil::GetRandomInRange( MIN_WORDS , MAX_WORDS );
+   for ( int i = 0 ; i < numWords ; ++i ) {
+      phrase += myDict.GetRandomWord() + " ";
+   }
+   phrase.erase( phrase.length() - 1 , 1 ); //remove extra space
+
+   //testing line wrap
+   //phrase = "this is my big dumb very long long long string to bge guessed lets see how it goes it is much longer than it should be";
+
+   //instance a new game object
+   PhraseGame myGame( myDict.GetSet() , phrase , MAX_GUESSES );
+
+   //initialize game state and display welcome screen
+   display( MAX_GUESSES , myGame.GetRevealPhrase() , STARTGAME_MESSAGE ,
+         myGame.GuessesMade() );
 
    do {
-      //use dictionary to make phrase
-      string phrase;
-      int numWords = swansonUtil::GetRandomInRange( MIN_WORDS , MAX_WORDS );
-      for ( int i = 0 ; i < numWords ; ++i ) {
-         phrase += myDict.GetRandomWord() + " ";
-      }
-      phrase.erase( phrase.length() - 1 , 1 ); //remove extra space
+      //get a guess from user
+      nextGuess = myGame.NextGuess();
 
-      //testing line wrap
-      //phrase = "this is my big dumb very long long long string to bge guessed lets see how it goes it is much longer than it should be";
+      //display results
+      display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
+            nextGuess.message , myGame.GuessesMade() );
 
-      //instance a new game object
-      PhraseGame myGame( myDict.GetSet() , phrase , MAX_GUESSES );
+      //testing
+      //cout << endl << "secret is:[" << myGame.GetSecretPhrase() << "]";
 
-      //initialize game state and display welcome screen
-      display( MAX_GUESSES , myGame.GetRevealPhrase() , STARTGAME_MESSAGE ,
+      //keep guessing if not solved, or remaining guesses
+   } while ( nextGuess.revealedPhrase != myGame.GetSecretPhrase()
+         && nextGuess.guesesRemaining > 0 );
+
+   //output final results
+   if ( myGame.GetRevealPhrase() == myGame.GetSecretPhrase() ) {
+      display( nextGuess.guesesRemaining , nextGuess.revealedPhrase , WON_GAME ,
             myGame.GuessesMade() );
-
-      do {
-         //get a guess from user
-         nextGuess = myGame.NextGuess();
-
-         //display results
-         display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
-               nextGuess.message , myGame.GuessesMade() );
-
-         //testing
-         //cout << endl << "secret is:[" << myGame.GetSecretPhrase() << "]";
-
-         //keep guessing if not solved, or remaining guesses
-      } while ( nextGuess.revealedPhrase != myGame.GetSecretPhrase()
-            && nextGuess.guesesRemaining > 0 );
-
-      //output final results
-      if ( myGame.GetRevealPhrase() == myGame.GetSecretPhrase() ){
-         display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
-            WON_GAME , myGame.GuessesMade() );
-      }else{
-         display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
+   } else {
+      display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
             LOST_GAME , myGame.GuessesMade() );
-         EndGameDisplay( phrase , myGame.GuessesMade() );
-      }
-
-
-
-      //offer to play again
-   } while ( swansonInput::yesNo( "Play again" ) );
+      EndGameDisplay( phrase , myGame.GuessesMade() );
+   }
 
 }
 

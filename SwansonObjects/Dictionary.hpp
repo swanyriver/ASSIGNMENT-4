@@ -122,10 +122,11 @@ public:
       else
          constructionWasSuccesfull = false;
    }
-   //constructor for a pre-fab set of words,  primarily for using error verion
+   //constructor for a pre-fab set of words,  primarily for using error version
    //in a polymorphic manner.
    Dictionary ( set<string> PreFabSet ) :
          wordSet( PreFabSet ), constructionWasSuccesfull( true ) {
+      if(wordSet.size()==0) constructionWasSuccesfull = false;
    }
 
    bool Filled () {
