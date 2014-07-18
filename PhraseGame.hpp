@@ -23,11 +23,10 @@ public:
    //public guess object
    struct Guess {
       bool succesful;
-      string errorMsg;
+      string message;
       string guess;
       bool correct;
       int GuesesRemaining;
-      //int occurences; //todo implement later
       string mRevealedPhrase;
 
       //for testing
@@ -40,9 +39,13 @@ public:
 
 private:
 
-   //error messages
+   // messages
+   static string GUESS_PROMPT;
    //not letter // not word //or a word in it is not in the dictionary
    static string NOT_IN_DICT;
+   static string GUESSED_BEFORE;
+   static string CORRECT_GUESS;
+   static string WRONG_GUESS;
 
    //global variables
    int mGuessesRemaining;
@@ -79,13 +82,24 @@ public:
    }
 };
 
+string PhraseGame::GUESS_PROMPT = "Enter a letter, or try to guess a word in the phrase,  or go for gold and guess the whole phrase \nWhat is your guess:";
 string PhraseGame::NOT_IN_DICT = "There is no possible way for that guess to be right so I won't count it against you";
+string PhraseGame::GUESSED_BEFORE = "You have already guessed that";
+string PhraseGame::CORRECT_GUESS = "";
+string PhraseGame::WRONG_GUESS = "";
+//todo  GUESS CORRECT,  GUESS INCORECT
 
 
 ///////phrase game function definitions///////
 
 PhraseGame::Guess PhraseGame::NextGuess () {
    PhraseGame::Guess myGuess;
+
+   //for testing
+   myGuess.SourceSet = mSourceWords;
+   myGuess.PhraseSet = mPhraseWords;
+
+   myGuess.GuesesRemaining = mGuessesRemaining;
 
    //get input from user
    myGuess.guess = swansonInput::GetString("what is your guess:");
@@ -94,27 +108,32 @@ PhraseGame::Guess PhraseGame::NextGuess () {
 
    myGuess.succesful = GuessChecker::guessIsValid(myGuess.guess, mSourceWords);
 
+   if(!myGuess.succesful){
+      myGuess.message = NOT_IN_DICT;
+      return myGuess;
+   }
 
-   //bool succesful;
-   //string errorMsg;
-   //string mRevealedPhrase;
-   /////////////unsucessful guess
+   if(swansonUtil::ExistsInSet(myGuess.guess,mGuesseesMade)){
+      myGuess.succesful = false;
+      myGuess.message = GUESSED_BEFORE;
+      return myGuess;
+   }
+   /////////////^unsucessful guess^  VSuccesfull guessV ////
 
-   //string guess;
-   //bool correct;
    mGuesseesMade.insert(myGuess.guess);
-   myGuess.GuesesRemaining = --mGuessesRemaining;
+   if(!myGuess.correct)myGuess.GuesesRemaining = --mGuessesRemaining;
+
+   //bool correct;
+
+
+   //ifcorrect  //if one char
+
+
    //string mRevealedPhrase;
    ///////////////succesful input
 
 
    //int occurences; //todo implement later
-
-
-   //for testing
-   myGuess.SourceSet = mSourceWords;
-   myGuess.PhraseSet = mPhraseWords;
-   myGuess.GuessSet = mGuesseesMade; //actually needed for display
 
    return myGuess;
 }
@@ -125,10 +144,6 @@ string PhraseGame::GetRevealedPhrase () {
    return " part 0f -re-v-ea-ed ph-ra-e";
 
 }
-
-/*string PhraseGame::GetUserGuess () {
-   return
-}*/
 
 bool PhraseGame::CorrectGuess ( string guess ) {
    return true; //use REcuse Checker

@@ -33,7 +33,9 @@ private:
    set<string>::iterator lookup;
 
 public:
-   set<string> GetSet(){ return wordSet; } //temporary access for phrase game
+   set<string> GetSet () {
+      return wordSet;
+   } //temporary access for phrase game
    //instead add AddWord() method, and others as needed!!!
 
 protected:
@@ -120,6 +122,11 @@ public:
       else
          constructionWasSuccesfull = false;
    }
+   //constructor for a pre-fab set of words,  primarily for using error verion
+   //in a polymorphic manner.
+   Dictionary ( set<string> PreFabSet ) :
+         wordSet( PreFabSet ), constructionWasSuccesfull( true ) {
+   }
 
    bool Filled () {
       return constructionWasSuccesfull;
@@ -165,7 +172,8 @@ public:
    }
 
    string GetRandomWord () {
-      if ( !Filled() )return DICTIONARY_EMPTY;
+      if ( !Filled() )
+         return DICTIONARY_EMPTY;
 
       int position = swansonUtil::GetRandomInRange( NumWords() - 1 );
       return GetWordAt( position );
@@ -177,7 +185,6 @@ public:
 const string Dictionary::DICTIONARY_EMPTY = "DICTIONARY_EMPTY";
 const string Dictionary::OUT_OF_BOUNDS = "OUT_OF_BOUNDS";
 ///PUBLIC ERROR CODES///////////////////////////////////////////
-
 
 /**************************************************************
  * * Purpose: A dictionary object with a non optimized input stream file
@@ -247,7 +254,6 @@ private:
    }
 
 };
-
 
 #endif /* DICTIONARY_HPP_ */
 

@@ -35,6 +35,8 @@ public:
    static void LowerCasePreserve ( string &caseString );
    static string UpperCase ( string caseString );
 
+   static int NumOccurances(string main, string sub);
+
    template <typename Type>
    static string GetString ( Type element){
       ostringstream numToString;
@@ -42,6 +44,20 @@ public:
       return numToString.str();
    }
 };
+
+int swansonString::NumOccurances(string main, string sub){
+   int occurances = 0;
+   int foundPos = 0;
+   while(foundPos!=string::npos){
+      foundPos = main.find(sub,foundPos);
+      if(foundPos!=string::npos){
+         foundPos++;
+         occurances++;
+      }
+   }
+   return occurances;
+}
+
 
 /******************************************************************************
  *    purpose: determines if a char is a letter
