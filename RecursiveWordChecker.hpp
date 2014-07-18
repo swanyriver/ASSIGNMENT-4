@@ -28,6 +28,8 @@ public:
 
    static void AddWholeWordsToGuesses(string phrase, set<string> &guesses);
 
+   static set<string> ElementsMissed(string phrase, set<string> guessesMade);
+
 private:
    static bool GuessIsPart ( string element , list<string> setList );
    static bool GuessIsPart ( string element , string mySet );
@@ -59,8 +61,36 @@ void GuessChecker::AddWholeWordsToGuesses(string phrase, set<string> &guesses){
       if(phraseLetters.empty()) // all letters in word were in guess set
          guesses.insert(nextword); //add word to guesses
    }
+}
 
+//for endgame report /// finding items in phrase set, not in guess set
+set<string> GuessChecker::ElementsMissed(string phrase, set<string> guessesMade){
+   //build phrase set
+   set<string> piecesOfPhrase;
+   list<string> phraseWords = NextSmallestSubSets(phrase);
+   list<string> phraseLetters;
+   while(!phraseWords.empty()){
+      piecesOfPhrase.insert(phraseWords.front());
+      phraseWords.pop_front();
 
+      phraseLetters = NextSmallestSubSets(phraseWords.front()); //get letters
+
+      while(!phraseLetters.empty() ){
+            cout << "adding " << phraseLetters.front();
+            piecesOfPhrase.insert(phraseLetters.front());
+            phraseLetters.pop_front();
+      }
+   }
+
+   //make pieces of set the union of PiecesofPhrase and Guesses
+   set<string>::iterator lookup = guessesMade.begin();
+   for(int x=0;x<guessesMade.size();x++){
+      if(piecesOfPhrase.count(*lookup)==0)
+         piecesOfPhrase.erase(*lookup);
+      lookup++;
+   }
+
+   return piecesOfPhrase;
 }
 
 //////build reveal string///////////

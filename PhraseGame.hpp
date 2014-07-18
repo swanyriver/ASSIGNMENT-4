@@ -30,8 +30,6 @@ public:
       string revealedPhrase;
    };
 
-   set<string> mGuesseesMade;
-
 private:
 
    // messages
@@ -47,6 +45,7 @@ private:
    int mGuessesRemaining;
    string mSecretPhrase;
    set<string> mSourceWords;
+   set<string> mGuesseesMade;
 
    //internal methods
    string GetUserGuess ();

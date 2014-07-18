@@ -19,11 +19,14 @@
 using namespace std;
 
 ///global variables /////////////////////
-const int MAX_GUESSES = 12;
+//const int MAX_GUESSES = 12;
+const int MAX_GUESSES = 4;
 const int MAX_WORDS = 5;
 const int MIN_WORDS = 3;
 //string literals
 string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
+string LOST_GAME = "Congratulations, you got the Secret Phrase";
+string WON_GAME = "You were close, but you didn't guess the Secret Phrase";
 
 //global objects//////
 Dictionary myDict;
@@ -71,8 +74,8 @@ int main ( int argc , char* argv[] ) {
 
    //myMenu.addItem(PlayGame,"play game","welcome to game");
 
-   myMenu.showMenu();
-
+   //myMenu.showMenu();
+   PlayGame();
 
 
    return 0;
@@ -96,6 +99,8 @@ void PlayGame () {
       }
       phrase.erase( phrase.length() - 1 , 1 ); //remove extra space
 
+      //tsting line wrap
+      phrase = "this is my big dumb very long long long string to bge guessed lets see how it goes it is much longer than it should be";
 
       //instance a new game object
       PhraseGame myGame( myDict.GetSet() , phrase , MAX_GUESSES );
@@ -121,6 +126,7 @@ void PlayGame () {
 
       //todo calculate win or loose
       //todo construct special display
+      EndGameDisplay(phrase,myGame.GuessesMade());
 
       //offer to play again
    } while ( swansonInput::yesNo( "Play again" ) );
