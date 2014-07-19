@@ -91,7 +91,9 @@ public:
 //string literals,  this "out of line" definition is to avoid globality with
 // using #define
 string PhraseGame::GUESS_PROMPT =
-      "Enter a letter, or try to guess a word in the phrase,  or go for gold and guess the whole phrase \nWhat is your guess:";
+      "Enter a letter, or try to guess a word in the phrase\n"
+      "or go for gold and guess the whole phrase \n\n"
+      "What is your guess:";
 string PhraseGame::NOT_IN_DICT =
       "There is no way for that guess to be right";
 string PhraseGame::GUESSED_BEFORE = "You have already guessed that";
