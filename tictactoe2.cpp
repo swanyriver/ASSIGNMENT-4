@@ -36,14 +36,16 @@ int main () {
    string Intro = "This is Two Dimensional Tic Tac Toe";
    MenuItem myExerciseComp( demonstrateComponent , "title" , Intro );
 
-   cout << "are your ready?";
-   getchar();
+
 
    myExerciseComp.ItemSelected();
 
 }
 
 void demonstrateComponent () {
+
+   cout << "are your ready?";
+   getchar();
 
    int myGameBoard[3][3];
    bool Xturn = true;

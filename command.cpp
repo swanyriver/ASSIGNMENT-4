@@ -17,21 +17,48 @@
  * *
  * ***********************************************************/
 
-
 #include <iostream>
-#include "SwansonObjects/menu.hpp"
+#include <string>
+#include <stdlib.h>
+#include "SwansonLibs/swansonString.hpp"
 
 using namespace std;
 
-void demonstrateComponent();
 
-int main(){
-   MenuItem myExerciseComp(demonstrateComponent,"title","intro");
+const int HIGH_GRADE = 5;
 
-   myExerciseComp.ItemSelected();
+int main ( int argc , char* argv[]) {
+   string Intro = "lets make a histogram of grades";
+   //MenuItem myExerciseComp( demonstrateComponent , "title" , Intro );
+   cout << Intro << endl;
+
+   int score;
+   int myGradeHisto[HIGH_GRADE];
+
+   //init to zero
+   for ( int index = 0 ; index < HIGH_GRADE ; index++ ) {
+      myGradeHisto[index] = 0;
+   }
+
+   //here switch based on global argc valu
+   int index =1;
+   while(index<argc) {
+      score = atoi(argv[index]);
+      if ( score >= 0 && score <= HIGH_GRADE ) {
+         myGradeHisto[score]++;
+      }
+      index++;
+   }
+
+   //output scores
+   cout << endl << "here is our wonderfull histogram:" << endl;
+   for ( int index = 0 ; index < HIGH_GRADE ; index++ ) {
+      cout << myGradeHisto[index] << " student(s) received a score of:" << index
+            << endl;
+   }
+
 
 }
 
-void demonstrateComponent(){
-   cout << "this function has run" << endl;
-}
+
+
