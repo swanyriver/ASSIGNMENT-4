@@ -25,8 +25,9 @@
 using namespace std;
 
 void demonstrateComponent ();
-bool TwodHasWon ( int player , int **gameBoard );
+bool TwodHasWon ( int **gameBoard );
 void showGameBoard ( int **gameBoard );
+bool CatGame(int **gameBoard  );
 
 const int NOT_TAKEN = 0;
 const int X = 1; //spaced for addadive set checking
@@ -93,15 +94,20 @@ void demonstrateComponent () {
       Xturn = !Xturn;
 
       //only need to check one, X can't win on O's turn
-   } while ( !TwodHasWon( player , myGameBoard ) );
+   } while ( !TwodHasWon( myGameBoard ) && !CatGame(myGameBoard));
 
-   cout << ((player == X) ? "Player X has won it!" : "Player O has won it!")
+   showGameBoard(myGameBoard);
+   if(TwodHasWon(myGameBoard) ){
+      cout << ((player == X) ? "Player X has won it!" : "Player O has won it!")
          << endl;
+   }
+   else cout << "the board is CAT" << endl;
+
 
 }
 
 void showGameBoard ( int **gameBoard ) {
-   //swansonUtil::ClearScreen();
+   swansonUtil::ClearScreen();
 
    for ( int index = 0 ; index < boardSize ; index++ ) {
       for ( int subIndex = 0 ; subIndex < boardSize ; subIndex++ ) {
@@ -121,7 +127,18 @@ void showGameBoard ( int **gameBoard ) {
    }
 }
 
-bool TwodHasWon ( int player , int **gameBoard ) {
+bool CatGame( int **gameBoard  ){
+   for ( int index = 0 ; index < boardSize ; index++ ) {
+      for ( int subIndex = 0 ; subIndex < boardSize ; subIndex++ ) {
+         if(gameBoard[index][subIndex] == NOT_TAKEN) return false;
+         //if there is a slot not taken, then game is still playable
+      }
+   }
+   //all positions taken
+   return true;
+}
+
+bool TwodHasWon ( int **gameBoard ) {
 
    const int ALL_Os = O * boardSize; //3
    const int ALL_Xs = X * boardSize; //30
@@ -166,7 +183,8 @@ bool TwodHasWon ( int player , int **gameBoard ) {
 
       int y = x;
       setinLine += gameBoard[y][x];
-      cout << "checking " << x << "," << y;
+      //for testing
+      /*cout << "checking " << x << "," << y;
       cout << "it is";
       switch (gameBoard[y][x]) {
          case NOT_TAKEN : cout << " not chosen" ;break;
@@ -174,7 +192,7 @@ bool TwodHasWon ( int player , int **gameBoard ) {
          case O : cout << " O "; break;
          default: cout << " undefined"; break;
       }
-      cout << endl;
+      cout << endl;*/
    }
    if ( setinLine == ALL_Os || setinLine == ALL_Xs )
       return true;
@@ -186,7 +204,8 @@ bool TwodHasWon ( int player , int **gameBoard ) {
 
       int y = (x*-1)+boardSize-1;
       setinLine += gameBoard[y][x];
-      cout << "checking " << x << "," << y;
+      //for testing
+      /*cout << "checking " << x << "," << y;
       cout << "it is";
       switch (gameBoard[y][x]) {
          case NOT_TAKEN : cout << " not chosen" ;break;
@@ -194,7 +213,7 @@ bool TwodHasWon ( int player , int **gameBoard ) {
          case O : cout << " O "; break;
          default: cout << " undefined"; break;
       }
-      cout << endl;
+      cout << endl;*/
    }
    if ( setinLine == ALL_Os || setinLine == ALL_Xs )
       return true;
