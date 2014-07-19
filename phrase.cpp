@@ -163,6 +163,9 @@ int main ( int argc , char* argv[] ) {
    PlainDict(); //full dictionary by default
    myMenu.demoAllItem = false;
 
+   //in case system() prevents program from launching, can be switched via menu
+   myMenu.setClear(HackClearScreen);
+
    //dict menu
    DictionaryMenu.demoAllItem = false;
    DictionaryMenu.menuRepeat = false;
