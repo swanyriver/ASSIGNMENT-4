@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include "../SwansonLibs/swansonString.hpp"
 #include "../SwansonLibs/swansonInput.hpp"
+#include "../SwansonLibs/swansonUtils.hpp"
 using namespace std;
 
 //strings for menu

@@ -57,7 +57,7 @@ void demonstrateComponent () {
    //dynamic array of pointer size boardsize
    int **myGameBoard = new int*[boardSize];
 
-   for ( int i = 0 ; i < boardSize; ++i ) {
+   for ( int i = 0 ; i < boardSize ; ++i ) {
       myGameBoard[i] = new int[boardSize];
       // myGameBoard[x][] pointer is now pointing to dynamic array of ints;
    }
@@ -78,7 +78,8 @@ void demonstrateComponent () {
             cout << "it is O's turn, ";
 
          selection = swansonInput::GetInt(
-               "pick a position that hasnt been chosen" , 1 , boardSize*boardSize ) - 1;
+               "pick a position that hasnt been chosen" , 1 ,
+               boardSize * boardSize ) - 1;
          SIndex = selection / boardSize;
          S_SubIndex = selection % boardSize;
       } while ( myGameBoard[SIndex][S_SubIndex] != NOT_TAKEN );
@@ -93,7 +94,6 @@ void demonstrateComponent () {
 
       //only need to check one, X can't win on O's turn
    } while ( !TwodHasWon( player , myGameBoard ) );
-   //} while ( true );
 
    cout << ((player == X) ? "Player X has won it!" : "Player O has won it!")
          << endl;
@@ -101,14 +101,15 @@ void demonstrateComponent () {
 }
 
 void showGameBoard ( int **gameBoard ) {
-   swansonUtil::ClearScreen();
+   //swansonUtil::ClearScreen();
 
    for ( int index = 0 ; index < boardSize ; index++ ) {
       for ( int subIndex = 0 ; subIndex < boardSize ; subIndex++ ) {
          if ( gameBoard[index][subIndex] == NOT_TAKEN ) {
             int position = index * boardSize + subIndex + 1;
             cout << "  " << position;
-            if(position<10) cout << " ";
+            if ( position < 10 )
+               cout << " ";
          } else if ( gameBoard[index][subIndex] == X ) {
             cout << "  X ";
          } else {
@@ -149,15 +150,54 @@ bool TwodHasWon ( int player , int **gameBoard ) {
 
    //check diaganols //todo needs refactor
    /*setOfThree = 0;
-   setOfThree += gameBoard[0][0] + gameBoard[1][1] + gameBoard[2][2];
-   if ( setOfThree == ALL_Os || setOfThree == ALL_Xs )
-      return true;
+    setOfThree += gameBoard[0][0] + gameBoard[1][1] + gameBoard[2][2];
+    if ( setOfThree == ALL_Os || setOfThree == ALL_Xs )
+    return true;
 
-   setOfThree = 0;
-   setOfThree += gameBoard[0][2] + gameBoard[1][1] + gameBoard[2][0];
-   if ( setOfThree == ALL_Os || setOfThree == ALL_Xs )
-      return true;*/
+    setOfThree = 0;
+    setOfThree += gameBoard[0][2] + gameBoard[1][1] + gameBoard[2][0];
+    if ( setOfThree == ALL_Os || setOfThree == ALL_Xs )
+    return true;*/
 
    //no matching set found
+   //diagonal 1 y=x
+   setinLine = 0;
+   for ( int x = 0 ; x < boardSize ; x++ ) {
+
+      int y = x;
+      setinLine += gameBoard[y][x];
+      cout << "checking " << x << "," << y;
+      cout << "it is";
+      switch (gameBoard[y][x]) {
+         case NOT_TAKEN : cout << " not chosen" ;break;
+         case X : cout << " X "; break;
+         case O : cout << " O "; break;
+         default: cout << " undefined"; break;
+      }
+      cout << endl;
+   }
+   if ( setinLine == ALL_Os || setinLine == ALL_Xs )
+      return true;
+
+   //digaonal 2, = diagonal 1 reflected across point (boardsize/2,boardsize/2)
+   //y=(x-boardsize-1)*-1   or y=(-x)+boardsize-1
+   setinLine = 0;
+   for ( int x = 0 ; x < boardSize ; x++ ) {
+
+      int y = (x*-1)+boardSize-1;
+      setinLine += gameBoard[y][x];
+      cout << "checking " << x << "," << y;
+      cout << "it is";
+      switch (gameBoard[y][x]) {
+         case NOT_TAKEN : cout << " not chosen" ;break;
+         case X : cout << " X "; break;
+         case O : cout << " O "; break;
+         default: cout << " undefined"; break;
+      }
+      cout << endl;
+   }
+   if ( setinLine == ALL_Os || setinLine == ALL_Xs )
+      return true;
+
    return false;
 }
