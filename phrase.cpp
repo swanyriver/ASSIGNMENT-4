@@ -24,11 +24,12 @@ using namespace std;
 const int MAX_GUESSES = 7;
 const int MAX_WORDS = 5;
 const int MIN_WORDS = 3;
-const int MAX_WORD_LENGTH = 7;
+const int MAX_WORD_LENGTH = 6;
 
 //global control variables //
 bool mDebugOn = false;
 const string DEBUG = "-d";
+const string SIMPLE_MODE = "-s";
 
 //string literals
 const string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
@@ -36,9 +37,9 @@ const string WON_GAME = "Congratulations, you got the Secret Phrase";
 const string LOST_GAME =
       "You were close, but you didn't guess the Secret Phrase";
 const string DICT_INTRO =
-      "The words in this game will be chosen from a dictionary,  You can play with the regular dictionary or use a book for fun flavor,  even add your own file";
+      "The words in this game will be chosen from a dictionary\nYou can play with the regular dictionary or use a book for fun flavor,\neven add your own file\n";
 const string CLEAR_INTRO =
-      "This games uses a system call to clear the screen,  if you prefer not then it can do this in an alternative mode";
+      "This games uses a system call to clear the screen\nif you prefer not then it can do this in an alternative mode";
 const string HOW_MANY_WORDS = "Now Playing with ";
 //for entering your own dictionary
 const string FILENAME_IN =
@@ -48,13 +49,12 @@ const string HOW_MANY_LETTERS =
 const int IN_MIN_LETTER = 3;
 const int IN_MAX_LETTER = 15;
 //todo add menu item text here
-//todo linewrap text
 
 //global objects//////
 Dictionary myDict(false);
 
-Menu DictionaryMenu( DICT_INTRO );
-Menu ClearScreenMenu( CLEAR_INTRO );
+Menu DictionaryMenu( DictionaryBanner() + DICT_INTRO );
+Menu ClearScreenMenu( SystemBanner() + CLEAR_INTRO );
 Menu myMenu( Banner() );
 
 ///fuction declarations /////////////////
@@ -137,10 +137,14 @@ void showClearScreenMenu () {
 void HackyClearSelected () {
    ClearScreen = HackClearScreen; //alternate method;
    myMenu.setClear(HackClearScreen);
+   DictionaryMenu.setClear(HackClearScreen);
+   ClearScreenMenu.setClear(HackClearScreen);
 }
 void SystemClearSelected () {
    ClearScreen = swansonUtil::ClearScreen;
    myMenu.setClear(swansonUtil::ClearScreen);
+   DictionaryMenu.setClear(swansonUtil::ClearScreen);
+   ClearScreenMenu.setClear(swansonUtil::ClearScreen);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -149,22 +153,33 @@ void SystemClearSelected () {
 /////////////////////////////////////////////////////////////////////////////
 int main ( int argc , char* argv[] ) {
 
-   ///process command line arguments//////////////
-   ARGinAttor myARGinAttor( argc , argv );
-   mDebugOn = myARGinAttor.ArgumentPassedIn( DEBUG );
+   //test ascii art
+   /*cout << SystemBanner(); getchar();
+   cout << DictionaryBanner(); getchar();
+   cout << Banner(); getchar();*/
 
+   ///process command line arguments//////////////
+   //string and bool pointer combo, bool will be set true if flag is in argsv[]
+   ARGinAttor::ControlFlag debugFlag = {DEBUG, &mDebugOn};
+   list<ARGinAttor::ControlFlag> flags;
+   flags.push_back(debugFlag);
+   //args and ControlFlags passed to ARGinAttor
+   ARGinAttor myARGinAttor( argc , argv, flags );
+
+   //check Arginators arguement set<string> for -s SIMPLE MODE
+   if(myARGinAttor.ArgumentPassedIn(SIMPLE_MODE)){
+      HackyClearSelected();
+   }
    ///finished command line arguments//////////////
 
    //set clearscreen pointer //system call by default
+   //except for menu //to avoid failure to launch //can be switched via menu
    ClearScreen = swansonUtil::ClearScreen;
 
    //initializations
    swansonUtil::SeedRandom();
    PlainDict(); //full dictionary by default
    myMenu.demoAllItem = false;
-
-   //in case system() prevents program from launching, can be switched via menu
-   myMenu.setClear(HackClearScreen);
 
    //dict menu
    DictionaryMenu.demoAllItem = false;
@@ -205,13 +220,16 @@ int main ( int argc , char* argv[] ) {
    ClearMenuItem.hasIntro = false;
    DictMenuItem.itemRepeat = false;
    ClearMenuItem.itemRepeat = false;
-   myMenu.addItem( DictMenuItem );
-   myMenu.addItem( ClearMenuItem );
+
 
    MenuItem playGameItem( PlayGame , "Play Game" , "intro" , "Play Again" );
    playGameItem.hasIntro = false;
    playGameItem.itemRepeat = true;
-   myMenu.addItem( playGameItem );
+
+   myMenu.addItem( playGameItem );  // [1] play game
+   myMenu.addItem( DictMenuItem );  // [2] dictionary settings
+   myMenu.addItem( ClearMenuItem ); // [3] system config
+                                    // [4] exit menu
 
    myMenu.showMenu();
 
