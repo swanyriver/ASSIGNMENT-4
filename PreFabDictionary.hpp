@@ -109,34 +109,4 @@ public:
    }
 };
 
-
-/*class PreFabDict{
-private:
-   static const string myWords[];
-   static int numWords;
-
-public:
-   static set<string> getSet(){
-      set<string> words;
-      for (int var = 0; var < numWords; ++var) {
-         words.insert(myWords[var]);
-      }
-
-      return words;
-   }
-};
-PreFabDict::numWords = 14;
-PreFabDict::myWords = {"hello", "goodbye",
-         "my","secret","word",
-         "phrase","thank","you",
-         "good","bad","bat",
-         "cat","jump","dog",
-   };*/
-
-//todo, find a way to return a dictionary here also, need to set constructed to true, and passs my set
-
-
-
-
-
 #endif /* PREFABDICTIONARY_HPP_ */

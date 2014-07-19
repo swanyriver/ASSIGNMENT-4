@@ -68,6 +68,7 @@ class Menu {
 private:
    vector<MenuItem> menuItems;
    string menuIntro;
+   void (*MenuClear)();
 
 public:
 
@@ -77,7 +78,13 @@ public:
    //constructor for menu
    Menu ( string intro ) :
          menuIntro( intro ), menuRepeat( true ), demoAllItem( true ), exitMenuItem(
-               true ) {
+               true ){
+      MenuClear = swansonUtil::ClearScreen;
+      //todo add default constructor for this
+   }
+
+   void setClear(void (*clear) ()){
+      MenuClear = clear;
    }
 
    void SetIntro(string intro){
@@ -102,6 +109,7 @@ public:
       int exitItemNumber = -1;
       do {
          ///////////display menu////////////////////
+         MenuClear();
          if ( withIntro )
             cout << endl << menuIntro << endl;
          int i = 0;

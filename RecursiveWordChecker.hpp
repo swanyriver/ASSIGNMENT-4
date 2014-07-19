@@ -135,7 +135,6 @@ bool GuessChecker::GuessIsValid ( list<string> guessList, set<string> dictionary
 /////check correct////////////////////
 list<string> GuessChecker::NextSmallestSubSets ( string mySet ) {
    list<string> smallerChunks;
-   //todo replace with HAS SPACES METHOD, UNDER TESTING
    if ( HasSpaces(mySet) ) { // there exists spaces, seperate words
       swansonString::SeperateWords( mySet , smallerChunks );
       return smallerChunks;

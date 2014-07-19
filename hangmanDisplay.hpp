@@ -94,7 +94,7 @@ string LineWrap ( string output , int sideBarWidth , int DisplayWidth ) {
  * ***************************************************************/
 
 void display ( int guessRemaining , string revealPhrase , string message ,
-      set<string> guessesMade ) {
+      set<string> guessesMade) {
 
    string secretPhraseLine, lettersLine, guessesLine, guessRemainingLine;
    string lettersRemainingLine, phraseRevealLine;
@@ -190,11 +190,20 @@ void display ( int guessRemaining , string revealPhrase , string message ,
    cout << messageLine << endl;
    cout << LINE_SEPERATE << endl;
 
+
+
+}
+
+void DebugDisplay(const string secretPhrase){
+   string DebugLine = "*   SECRET PHRASE   * [DEBUG] "
+               + secretPhrase;
+   DebugLine = LineWrap( DebugLine , SIDEBAR_DISPLAY , WIDTH_DISPLAY );
+   cout << DebugLine << endl;
+   cout << LINE_SEPERATE << endl;
 }
 
 void EndGameDisplay ( string secretPhrase , set<string> guesses ) {
 
-   //todo construct special display
 
    string LettersMissedLine = LETTERS_UNREAVEALED_LABEL;
    string secretPhraseLine = REVEAL_WORD_LABEL + secretPhrase;

@@ -16,14 +16,20 @@
 #include "hangmanDisplay.hpp"
 #include "SwansonObjects/Dictionary.hpp"
 #include "SwansonObjects/menu.hpp"
+#include "SwansonObjects/ArgReader.hpp"
 
 using namespace std;
 
 ///global variables /////////////////////
-const int MAX_GUESSES = 9;
+const int MAX_GUESSES = 7;
 const int MAX_WORDS = 5;
 const int MIN_WORDS = 3;
-const int MAX_WORD_LENGTH = 6;
+const int MAX_WORD_LENGTH = 7;
+
+//global control variables //
+bool mDebugOn = false;
+const string DEBUG = "-d";
+
 //string literals
 const string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
 const string WON_GAME = "Congratulations, you got the Secret Phrase";
@@ -42,9 +48,10 @@ const string HOW_MANY_LETTERS =
 const int IN_MIN_LETTER = 3;
 const int IN_MAX_LETTER = 15;
 //todo add menu item text here
+//todo linewrap text
 
 //global objects//////
-Dictionary myDict;
+Dictionary myDict(false);
 
 Menu DictionaryMenu( DICT_INTRO );
 Menu ClearScreenMenu( CLEAR_INTRO );
@@ -82,21 +89,24 @@ void usePreFabDict () {
       exit( 1 );
    }
 }
-void MobyDict () {
-   //construcs a dict of 6 letter long words from unformatted file "moby.txt"
-   myDict = ThemeDictionary( MAX_WORD_LENGTH , "moby.txt" );
-   myMenu.SetIntro(
-         Banner() + HOW_MANY_WORDS
-               + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
-   if ( !myDict.Filled() )
-      usePreFabDict();
-}
+
 void PlainDict () {
-   myDict = Dictionary( MAX_WORD_LENGTH ); //Constructs a dict of 6 letter long words
+   //Constructs a dict of MaxWordLength letter long words
+   myDict = Dictionary( MAX_WORD_LENGTH );
    myMenu.SetIntro(
          Banner() + HOW_MANY_WORDS
                + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
 
+   if ( !myDict.Filled() )
+      usePreFabDict();
+}
+
+void MakeThemeDictionary ( const string filename , const int maxLenght =
+      MAX_WORD_LENGTH ) {
+   myDict = ThemeDictionary( maxLenght , filename );
+   myMenu.SetIntro(
+         Banner() + HOW_MANY_WORDS
+               + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
    if ( !myDict.Filled() )
       usePreFabDict();
 }
@@ -106,15 +116,17 @@ void UserDict () {
    int maxLenght = swansonInput::GetInt( HOW_MANY_LETTERS , IN_MIN_LETTER ,
          IN_MAX_LETTER );
 
-   myDict = ThemeDictionary(maxLenght,filename);
-
-   myMenu.SetIntro(
-         Banner() + HOW_MANY_WORDS
-               + swansonString::GetString( myDict.NumWords() ) + " words!!!" );
-
-   if ( !myDict.Filled() )
-      usePreFabDict();
-
+   MakeThemeDictionary( filename , maxLenght );
+}
+void MobyDict () {
+   //construcs a dict of MaxWordLength letter long words
+   //from unformatted file "moby.txt"
+   MakeThemeDictionary( "moby.txt" );
+}
+void FriendsDict () {
+   //construcs a dict of 9 letter long words
+   //from unformatted file "friends.txt"
+   MakeThemeDictionary( "friends.txt" , 9);
 }
 
 //clear screen choices
@@ -124,16 +136,24 @@ void showClearScreenMenu () {
 
 void HackyClearSelected () {
    ClearScreen = HackClearScreen; //alternate method;
+   myMenu.setClear(HackClearScreen);
 }
 void SystemClearSelected () {
    ClearScreen = swansonUtil::ClearScreen;
+   myMenu.setClear(swansonUtil::ClearScreen);
 }
 
-//todo add arg reader for -s and -d   (clear screen off, and dictionary off)
-
+/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////int main()/////
+//////////////////////////////////////////////////////PROGRAM BEGINS HERE////
+/////////////////////////////////////////////////////////////////////////////
 int main ( int argc , char* argv[] ) {
 
-   myMenu.demoAllItem = false;
+   ///process command line arguments//////////////
+   ARGinAttor myARGinAttor( argc , argv );
+   mDebugOn = myARGinAttor.ArgumentPassedIn( DEBUG );
+
+   ///finished command line arguments//////////////
 
    //set clearscreen pointer //system call by default
    ClearScreen = swansonUtil::ClearScreen;
@@ -141,8 +161,7 @@ int main ( int argc , char* argv[] ) {
    //initializations
    swansonUtil::SeedRandom();
    PlainDict(); //full dictionary by default
-
-   //local variables/objects
+   myMenu.demoAllItem = false;
 
    //dict menu
    DictionaryMenu.demoAllItem = false;
@@ -156,7 +175,12 @@ int main ( int argc , char* argv[] ) {
    moby.itemRepeat = false;
    DictionaryMenu.addItem( moby );
 
-   MenuItem user( UserDict , "Make Your Own \"MyDictionary.txt\"" , "This is exciting, what kind of words do you have to play with today?" );
+   MenuItem friends( FriendsDict , "Friends TV Words (play like its 1995!!)" , "loading in Chandler, Joey, Ross, Monica, Pheoby, and Rachel" );
+   friends.itemRepeat = false;
+   DictionaryMenu.addItem( friends );
+
+   MenuItem user( UserDict , "Make Your Own \"MyDictionary.txt\"" ,
+         "This is exciting, what kind of words do you have to play with today?" );
    user.itemRepeat = false;
    DictionaryMenu.addItem( user );
 
@@ -215,6 +239,8 @@ void PlayGame () {
    //initialize game state and display welcome screen
    display( MAX_GUESSES , myGame.GetRevealPhrase() , STARTGAME_MESSAGE ,
          myGame.GuessesMade() );
+   //help text for debug
+   if ( mDebugOn ) DebugDisplay(myGame.GetSecretPhrase());
 
    do {
       //get a guess from user
@@ -223,9 +249,8 @@ void PlayGame () {
       //display results
       display( nextGuess.guesesRemaining , nextGuess.revealedPhrase ,
             nextGuess.message , myGame.GuessesMade() );
-
-      //testing
-      //cout << endl << "secret is:[" << myGame.GetSecretPhrase() << "]";
+      //help text for debug
+      if ( mDebugOn ) DebugDisplay(myGame.GetSecretPhrase());
 
       //keep guessing if not solved, or remaining guesses
    } while ( nextGuess.revealedPhrase != myGame.GetSecretPhrase()

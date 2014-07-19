@@ -21,8 +21,10 @@
 #include <set>
 #include <algorithm> //for string compare less<string>, used by set<>
 #include <iterator>
+#include <ctime>
 #include "../SwansonLibs/swansonUtils.hpp"
 #include "../SwansonLibs/swansonString.hpp"
+
 
 using namespace std;
 
@@ -227,12 +229,14 @@ private:
     *
     *
     * ***************************************************************/
+   static const int BAIL = 5; //time until we give up on file
    void ReadFromFile ( fstream &instream , set<string> &wordSet ,
          const int MaxWordLength ) {
 
       string nextWord;
+      int timein = time(NULL);
 
-      while ( !instream.eof() ) {
+      while ( !instream.eof() && time(NULL)-timein<BAIL) { //x second bailout
          while ( !swansonString::IsALetter( (instream.peek()) ) ) {
             instream.ignore( 1 );
          }
@@ -248,11 +252,12 @@ private:
                      || nextWord.size() < MaxWordLength) ) {
 
             nextWord = swansonString::LowerCase( nextWord );
+
             wordSet.insert( nextWord );
-
          }
-
       }
+
+      //cout << "time out is " << time(NULL) << " file took " << time(NULL)-timein;
 
    }
 
