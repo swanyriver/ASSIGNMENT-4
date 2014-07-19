@@ -156,7 +156,7 @@ int main ( int argc , char* argv[] ) {
    moby.itemRepeat = false;
    DictionaryMenu.addItem( moby );
 
-   MenuItem user( UserDict , "Make Your Own \"MyDictionary.txt\"" , "loading your dictionary" );
+   MenuItem user( UserDict , "Make Your Own \"MyDictionary.txt\"" , "This is exciting, what kind of words do you have to play with today?" );
    user.itemRepeat = false;
    DictionaryMenu.addItem( user );
 

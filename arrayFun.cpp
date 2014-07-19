@@ -17,24 +17,40 @@
  * *
  * ***********************************************************/
 
-
 #include <iostream>
+#include <string>
 #include "SwansonObjects/menu.hpp"
+#include "SwansonLibs/swansonInput.hpp"
 
 using namespace std;
 
-void demonstrateComponent();
+void demonstrateComponent ();
 
-int main(){
+int main () {
 
-   const string INTRO = " ";
+   const string INTRO = "We are going to collect some numbers\nPut them into an array\nAnd then add them up!";
 
-   MenuItem myExerciseComp(demonstrateComponent,"",INTRO);
+   MenuItem myExerciseComp( demonstrateComponent , "" , INTRO );
 
    myExerciseComp.ItemSelected();
 
 }
 
-void demonstrateComponent(){
-   cout << "this function has run" << endl;
+void demonstrateComponent () {
+   const int NUM_ELEMENTS = 4;
+   int numbers[NUM_ELEMENTS];
+
+   for ( int i = 0 ; i < NUM_ELEMENTS ; i++ ) {
+
+      numbers[i] = swansonInput::GetInt(
+            "number " + swansonString::GetString( i + 1 ) + " of "
+                  + swansonString::GetString( NUM_ELEMENTS ) + " will be:" );
+   }
+
+   long int sum=0;
+   for ( int i = 0 ; i < NUM_ELEMENTS ; i++ ) sum += numbers[i];
+
+   cout << endl << "the sum is:" << sum;
+
+
 }
