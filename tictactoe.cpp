@@ -43,7 +43,7 @@ int main () {
    string Intro = "This is One Dimensional Tic Tac Toe";
    MenuItem myExerciseComp( demonstrateComponent , "title" , Intro );
 
-   cout << "are your ready?"; getchar();
+   while(!swansonInput::yesNo("are you ready for tic tac toe"))
 
    myExerciseComp.ItemSelected();
 

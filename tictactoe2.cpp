@@ -53,8 +53,7 @@ int main () {
 
 void demonstrateComponent () {
 
-   cout << "are your ready?";
-   getchar();
+   while(!swansonInput::yesNo("are you ready for tic tac toe"));
 
    int myGameBoard[3][3];
    bool Xturn = true;
