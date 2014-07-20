@@ -13,6 +13,9 @@
 #include <list>
 #include "Dictionary.hpp"
 
+#include "../SwansonLibs/swansonInput.hpp"
+#include "../SwansonLibs/swansonUtils.hpp"
+
 using namespace std;
 
 class DictionaryTester {
@@ -37,6 +40,20 @@ public:
          cout << testDict.GetRandomWord() << endl;
 
       getchar();
+
+
+   }
+   static void MakePhrases (Dictionary testDict){
+      const int NUMLINES = 7;
+       do{
+         for (int var = 0; var < NUMLINES; ++var) {
+            string randomPhrase;
+            for(int i = 0; i< swansonUtil::GetRandomInRange(3,6);i++){
+               randomPhrase += testDict.GetRandomWord() + " ";
+            }
+            cout << endl << randomPhrase;
+         }
+      }while (swansonInput::yesNo("more phrases"));
    }
    ///////////////////////end of test functions ///////////////////////////////
 };

@@ -17,6 +17,7 @@ About my game,
 Command line arguments:
 '-s'  =  simple mode, game will run without calls to system()
 '-d'  -  DEBUG,  a readout of the secret phrase is incorporated into the display, for the purposes of observing recursive guess check algorithm
+'-p'  -  PHRASE GEN TEST  after hitting play game [1] you will have a chance to see the dictionary phrase generation at work, especially fun for seeing the effects of using the Moby Dick dictionary, or the Friends dictionary
 
 
 I wished to make a -help for my game but have come to the deadline, so I will explain some of the weirder parts of the rules:

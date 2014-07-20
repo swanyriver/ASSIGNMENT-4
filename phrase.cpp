@@ -17,6 +17,8 @@
 #include "SwansonObjects/Dictionary.hpp"
 #include "SwansonObjects/menu.hpp"
 #include "SwansonObjects/ArgReader.hpp"
+#include "SwansonObjects/BlackBoxTesters.hpp"
+
 
 using namespace std;
 
@@ -28,8 +30,10 @@ const int MAX_WORD_LENGTH = 6;
 
 //global control variables //
 bool mDebugOn = false;
+bool mPharseTestOn = true;
 const string DEBUG = "-d";
 const string SIMPLE_MODE = "-s";
+const string PHRASE_GEN = "-p";
 
 //string literals
 const string STARTGAME_MESSAGE = "Welcome to the Game, Good Luck";
@@ -161,8 +165,10 @@ int main ( int argc , char* argv[] ) {
    ///process command line arguments//////////////
    //string and bool pointer combo, bool will be set true if flag is in argsv[]
    ARGinAttor::ControlFlag debugFlag = {DEBUG, &mDebugOn};
+   ARGinAttor::ControlFlag phraseFlag = {PHRASE_GEN, &mPharseTestOn};
    list<ARGinAttor::ControlFlag> flags;
    flags.push_back(debugFlag);
+   flags.push_back(phraseFlag);
    //args and ControlFlags passed to ARGinAttor
    ARGinAttor myARGinAttor( argc , argv, flags );
 
@@ -239,6 +245,13 @@ int main ( int argc , char* argv[] ) {
 }
 
 void PlayGame () {
+
+   //////testing phrase generation
+   if(mPharseTestOn){
+      DictionaryTester::MakePhrases(myDict);
+   }
+
+   /////////////end test
 
    //local variables/objects
    PhraseGame::Guess nextGuess;
