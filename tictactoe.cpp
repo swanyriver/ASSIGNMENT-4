@@ -24,12 +24,20 @@
 
 using namespace std;
 
-void demonstrateComponent ();
-bool HardCodedWinCheck ( int player , int gameBoard[] );
-
 const int NOT_TAKEN = 0;
 const int X = 1;
 const int O = 2;
+
+void demonstrateComponent ();
+bool HardCodedWinCheck ( int player , int gameBoard[] );
+bool GameCat(int gameBoard[]){
+   for(int i=1;i<10;i++){
+      if(gameBoard[i]==NOT_TAKEN) return false;
+   }
+   return true;
+}
+
+
 
 int main () {
    string Intro = "This is One Dimensional Tic Tac Toe";
@@ -89,9 +97,11 @@ void demonstrateComponent () {
       Xturn = !Xturn;
 
       //only need to check one, X can't win on O's turn
-   } while ( !HardCodedWinCheck( player, myGameBoard ) );
+   } while ( !HardCodedWinCheck( player, myGameBoard ) && !GameCat(myGameBoard) );
 
-   cout <<
+   showGameBoard(myGameBoard);
+   if(GameCat(myGameBoard)) cout << "game is cat";
+   else cout <<
          ( (player==X)? "Player X has won it!" : "Player O has won it!")
          << endl;
 

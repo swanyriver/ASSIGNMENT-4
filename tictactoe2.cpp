@@ -32,6 +32,15 @@ const int NOT_TAKEN = 0;
 const int X = 1; //spaced for addadive set checking
 const int O = 10;
 
+bool GameCat(int gameBoard[][3]){
+   for ( int index = 0 ; index < 3 ; index++ ) {
+      for ( int subIndex = 0 ; subIndex < 3 ; subIndex++ ) {
+         if(gameBoard[index][subIndex] == NOT_TAKEN) return false;
+      }
+   }
+   return true;
+}
+
 int main () {
    string Intro = "This is Two Dimensional Tic Tac Toe";
    MenuItem myExerciseComp( demonstrateComponent , "title" , Intro );
@@ -87,9 +96,14 @@ void demonstrateComponent () {
    } while ( !TwodHasWon( player , myGameBoard ) );
    //} while ( true );
 
-   cout << ((player == X) ? "Player X has won it!" : "Player O has won it!")
-         << endl;
+   /*cout << ((player == X) ? "Player X has won it!" : "Player O has won it!")
+         << endl;*/
 
+   for ( int index = 0 ; index < 3 ; index++ ) {
+      for ( int subIndex = 0 ; subIndex < 3 ; subIndex++ ) {
+         myGameBoard[index][subIndex] = NOT_TAKEN;
+      }
+   }
 }
 
 void showGameBoard ( int gameBoard[][3] ) {

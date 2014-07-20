@@ -1,0 +1,31 @@
+all: 1 2 3 4 5 6 7 8 9
+
+1:arrayFun.cpp
+	g++ arrayFun.cpp -o 1
+
+2:crefFun.cpp
+	g++ crefFun.cpp -w -o 2
+
+3:grades.cpp
+	g++ grades.cpp -o 3
+
+4:tictactoe.cpp
+	g++ tictactoe.cpp -o 4
+
+5:tictactoe2.cpp
+	g++ tictactoe2.cpp -o 5
+
+6:pointerFun.cpp
+	g++ pointerFun.cpp -o 6
+
+7:dynamicFun.cpp
+	g++ dynamicFun.cpp -o 7
+
+8:dynttt.cpp
+	g++ dynttt.cpp -o 8
+
+9:command.cpp
+	g++ command.cpp -o 9
+
+	echo all compiled
+	./1&&./2&&./3&&./4&&./5&&./6&&./7&&./8&&./9 8 3 4 3 3 3 3 2 3 4 5 6 3 4 5 3 2 3 4
