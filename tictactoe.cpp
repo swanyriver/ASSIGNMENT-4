@@ -43,7 +43,7 @@ int main () {
    string Intro = "This is One Dimensional Tic Tac Toe";
    MenuItem myExerciseComp( demonstrateComponent , "title" , Intro );
 
-   while(!swansonInput::yesNo("are you ready for tic tac toe"))
+
 
    myExerciseComp.ItemSelected();
 
@@ -65,6 +65,8 @@ void showGameBoard ( int gameBoard[] ) {
 }
 
 void demonstrateComponent () {
+
+   while(!swansonInput::yesNo("are you ready for tic tac toe"));
 
    int myGameBoard[10];
    bool Xturn = true;
