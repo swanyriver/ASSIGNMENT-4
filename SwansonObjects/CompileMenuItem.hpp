@@ -14,6 +14,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <list>
 using namespace std;
 
 class CompileMenuItem: public MenuItem {
@@ -22,11 +23,12 @@ private:
    string compileCommand, runCommand;
    bool compiled;
    void ItemSelected () {
-      if(compiled) system(runCommand.c_str());
+      if ( compiled )
+         system( runCommand.c_str() );
    }
 public:
 
-   static  const string N0T_COMP;
+   static const string N0T_COMP;
 
    CompileMenuItem ( string filename ) :
          MenuItem( filename , "welcome to " + filename ) {
@@ -44,8 +46,8 @@ public:
             exit( 1 );
 
          this->title += CompileMenuItem::N0T_COMP;
-         this->itemRepeat=false;
-         this->hasIntro=false;
+         this->itemRepeat = false;
+         this->hasIntro = false;
          compiled = false;
       }
 
@@ -54,5 +56,26 @@ public:
 };
 
 const string CompileMenuItem::N0T_COMP = " NOT COMPILED";
+
+
+class AutoCompileMenu: public Menu {
+   public:
+
+   AutoCompileMenu ( list<string> items , string title =
+         "all of the compiled programs" ) :
+         Menu( title ) {
+      this->clearScreenON = false;
+
+      while(!items.empty()){
+         this->addItem(new CompileMenuItem(items.front()));
+         items.pop_front();
+      }
+
+      this->menuRepeat = true;
+      this->clearScreenON=false;
+      this->demoAllItem=true;
+
+   }
+};
 
 #endif /* COMPILEMENUITEM_HPP_ */

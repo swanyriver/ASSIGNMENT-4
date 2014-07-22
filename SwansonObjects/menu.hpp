@@ -94,6 +94,8 @@ public:
       menuItems.push_back( item );
    }
 
+   MenuItem* GetLastItem(){return menuItems.back();}
+
    //display menu options and prompt for selection
    void showMenu ( bool withIntro = true ) {
       int demoItemNumber = -1;
