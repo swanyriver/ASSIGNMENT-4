@@ -34,7 +34,7 @@ int main () {
    string Intro = "lets make a histogram of grades\nEnter grades from 0 to "
          + swansonString::GetString( HIGH_GRADE ) + " with a value of "
          + swansonString::GetString( SENTINAL ) + " to stop";
-   MenuItem myExerciseComp( demonstrateComponent , "title" , Intro );
+   GoItem myExerciseComp( demonstrateComponent , "title" , Intro );
 
    myExerciseComp.ItemSelected();
 

@@ -37,49 +37,46 @@ using namespace std;
 
 //items to be added to menu
 class MenuItem {
-private:
-   void (*myFunction) ();
+
 public:
    string title, intro, repeatpromt;
    bool itemRepeat;
    bool hasIntro;
 
    //constructor for menu item
-   MenuItem ( void (*itemFunction) () , string itemTitle , string itemIntro ,
+   MenuItem ( string itemTitle , string itemIntro ,
          string itemRepeatprompt = DFLT_REPEART ) {
       itemRepeat = true;
       hasIntro = true;
       title = itemTitle;
       intro = itemIntro;
       repeatpromt = itemRepeatprompt;
-      myFunction = itemFunction;
+      //myFunction = itemFunction;
    }
 
    //introduces and executes the function held by menu item
-   void ItemSelected () {
-      do {
-         if ( hasIntro )
-            cout << endl << intro << endl;
-         myFunction();
-      } while ( itemRepeat && swansonInput::yesNo( repeatpromt ) );
-   }
+   virtual void ItemSelected () =0;
 };
 
 class Menu {
 private:
-   vector<MenuItem> menuItems;
+   vector<MenuItem*> menuItems;
    string menuIntro;
    void (*MenuClear)();
 
+
 public:
 
+   bool clearScreenON;
    bool menuRepeat; //controls if menu repeats
    bool demoAllItem, exitMenuItem; //include items for menu functions
 
+
+
    //constructor for menu
    Menu ( string intro ) :
-         menuIntro( intro ), menuRepeat( true ), demoAllItem( true ), exitMenuItem(
-               true ){
+         menuIntro( intro ), menuRepeat( true ), demoAllItem( false ), exitMenuItem(
+               true ),clearScreenON(true){
       MenuClear = swansonUtil::ClearScreen;
       //todo add default constructor for this
    }
@@ -93,15 +90,8 @@ public:
    }
 
    //add an item to the menu
-   void addItem ( MenuItem item ) {
+   void addItem ( MenuItem *item ) {
       menuItems.push_back( item );
-   }
-   //constructs a menu item with passed parameters and defualts, adds it to menu
-   void addItem ( void (*itemFunction) () , string itemTitle ,
-         string itemIntro , string itemRepeatprompt = DFLT_REPEART ) {
-      MenuItem addedItem( itemFunction , itemTitle , itemIntro ,
-            itemRepeatprompt );
-      addItem( addedItem );
    }
 
    //display menu options and prompt for selection
@@ -110,13 +100,13 @@ public:
       int exitItemNumber = -1;
       do {
          ///////////display menu////////////////////
-         MenuClear();
+        if(clearScreenON) MenuClear();
          if ( withIntro )
             cout << endl << menuIntro << endl;
          int i = 0;
          for ( ; i < menuItems.size() ; i++ ) {
             cout << "[" << i + 1 << "] ";
-            cout << menuItems.at( i ).title;
+            cout << menuItems.at( i )->title;
             cout << endl;
          }
          ////////////display menu function items/////
@@ -138,11 +128,11 @@ public:
          //execute selection
          if ( selection == demoItemNumber ) { //demo all
             for ( int i = 0 ; i < menuItems.size() ; i++ )
-               menuItems.at( i ).ItemSelected();
+               menuItems.at( i )->ItemSelected();
          } else if ( selection == exitItemNumber ) {
             menuRepeat = false;
          } else {
-            menuItems.at( selection - 1 ).ItemSelected();
+            menuItems.at( selection - 1 )->ItemSelected();
          }
 
       } while ( menuRepeat ); //repeat menu
@@ -159,10 +149,10 @@ public:
 
             if ( selectionNumber == 0 ) { //demo all
                for ( int i = 0 ; i < menuItems.size() ; i++ )
-                  menuItems.at( i ).ItemSelected();
+                  menuItems.at( i )->ItemSelected();
             } else if ( selectionNumber > 0
                   && selectionNumber <= menuItems.size() ) {
-               menuItems.at( selectionNumber - 1 ).ItemSelected();
+               menuItems.at( selectionNumber - 1 )->ItemSelected();
             }
 
          }
@@ -171,4 +161,37 @@ public:
 
 };
 
+
+
+////////////////////////////////////////////MENU ITEM TYPES
+/////////////////////////////////////////////////////////////////////
+
+class GoItem:public MenuItem{
+private:
+   void (*myFunction) ();
+public:
+   GoItem ( void (*itemFunction) () , string itemTitle , string itemIntro ,
+         string itemRepeatprompt = DFLT_REPEART ):MenuItem(itemTitle,itemIntro,itemRepeatprompt) {
+
+      myFunction = itemFunction;
+   }
+
+   void ItemSelected(){
+      do {
+         if ( hasIntro )
+            cout << endl << intro << endl;
+         myFunction();
+      } while ( itemRepeat && swansonInput::yesNo( repeatpromt ) );
+   }
+};
 #endif /*MENU_HPP_ */
+
+
+/* virtual void ItemSelected () {
+      do {
+         if ( hasIntro )
+            cout << endl << intro << endl;
+         myFunction();
+      } while ( itemRepeat && swansonInput::yesNo( repeatpromt ) );
+   }
+   */

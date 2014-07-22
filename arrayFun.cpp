@@ -21,6 +21,7 @@
 #include <string>
 #include "SwansonObjects/menu.hpp"
 #include "SwansonLibs/swansonInput.hpp"
+//#include "CompileMenuItem.hpp"
 
 using namespace std;
 
@@ -30,7 +31,7 @@ int main () {
 
    const string INTRO = "We are going to collect some numbers\nPut them into an array\nAnd then add them up!";
 
-   MenuItem myExerciseComp( demonstrateComponent , "" , INTRO );
+   GoItem myExerciseComp( demonstrateComponent , "" , INTRO );
 
    myExerciseComp.ItemSelected();
 
